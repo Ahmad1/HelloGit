@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="action_settings">Settings</string>
+    
+    <string name="app_name">ESL Pod</string>
+    <string name="hello_world">Hi</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main_activity1126">ESL Podcast</string>
+    <string name="date">date</string>
+    <string name="time">time</string>
+    <string name="title">title</string>
+    <string name="summary">summary</string>
+    <string name="nonetwork">No Network Connection!</string>
+    <string name="retry">Retry</string>
+
+</resources>

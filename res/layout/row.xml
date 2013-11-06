@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/White" >
+
+    <TextView
+        android:id="@+id/tvDate"
+        style="@style/normal_text_black.bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="15dp"
+        android:hint="@string/date"
+        android:includeFontPadding="true"
+        android:maxLines="3"
+        android:textColor="@color/dark_green"
+        android:textSize="14dp" />
+
+    <TextView
+        android:id="@+id/tvTime"
+        style="@style/normal_text_black.bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="15dp"
+        android:hint="@string/time"
+        android:maxLines="1"
+        android:textColor="@color/dark_green"
+        android:textSize="14dp" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#f49418"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:paddingTop="10dp"
+        android:layout_below="@id/tvDate" />
+
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/tvTime"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
+        android:background="@drawable/shape"
+        android:padding="3dp" >
+
+        <TextView
+            android:id="@+id/tvTitle"
+            style="@style/normal_text_black.header2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:hint="@string/title"
+            android:includeFontPadding="true"
+            android:textColor="@color/Black_light"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/tvSum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvTitle"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:hint="@string/summary"
+            android:includeFontPadding="true"
+            android:maxLines="2"
+            android:textColor="@color/Black_light"
+            android:textSize="14dp" />
+    </TableLayout>
+
+</RelativeLayout>
