@@ -16,7 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
+// import com.google.android.gms.ads.*;
 import com.example.fragment0901.R;
 import com.example.fragment0901.adapter.PodCast;
 
@@ -54,7 +54,7 @@ public class PodListActivity extends FragmentActivity implements PodListFragment
 	}
 
 	public void setAppOrientation() {
-		if (Configuration.SCREENLAYOUT_SIZE_MASK == Configuration.SCREENLAYOUT_SIZE_LARGE){
+		if (Configuration.SCREENLAYOUT_SIZE_MASK >= Configuration.SCREENLAYOUT_SIZE_LARGE){
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		} else {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -63,6 +63,7 @@ public class PodListActivity extends FragmentActivity implements PodListFragment
 
 	@Override
 	public void onItemSelected(PodCast podcast) {
+        Log.i(tag, "onItemSelected called");
 		bundle.putString("title", podcast.getTitle());
 		bundle.putString("link", podcast.getLink());
 		bundle.putString("summary", podcast.getSummary());
