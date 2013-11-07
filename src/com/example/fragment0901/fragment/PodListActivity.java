@@ -21,7 +21,7 @@ import com.example.fragment0901.R;
 import com.example.fragment0901.adapter.PodCast;
 
 public class PodListActivity extends FragmentActivity implements PodListFragment.CallBacks {
-	private String tag = this.getClass().getSimpleName();
+	private String tag = ((Object)this).getClass().getSimpleName();
 	private TextView connectionError;
 	private Button Retry;
 	private boolean twoPane;

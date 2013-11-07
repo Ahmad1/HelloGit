@@ -3,7 +3,7 @@
     android:id="@+id/rlContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/White" >
+    android:background="@color/White">
 
     <TextView
         android:id="@+id/tvDate"
@@ -41,37 +41,59 @@
         android:paddingTop="10dp"
         android:layout_below="@id/tvDate" />
 
-    <TableLayout
+
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/shape"
+        android:paddingBottom="3dp"
         android:layout_alignParentLeft="true"
         android:layout_below="@id/tvTime"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="3dp"
-        android:layout_marginBottom="3dp"
-        android:background="@drawable/shape"
-        android:padding="3dp" >
+        android:layout_marginBottom="3dp">
+
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:id="@+id/cafe"
+            android:layout_centerVertical="true"
+            android:visibility="gone"
+            android:background="@drawable/cafe" />
 
         <TextView
             android:id="@+id/tvTitle"
             style="@style/normal_text_black.header2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/cafe"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="5dp"
             android:hint="@string/title"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:includeFontPadding="true"
             android:textColor="@color/Black_light"
             android:textSize="15dp" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/menu"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="5dp"
+            android:id="@+id/menu"
+            android:layout_alignParentRight="true" />
 
         <TextView
             android:id="@+id/tvSum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/cafe"
             android:layout_below="@id/tvTitle"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="5dp"
@@ -80,6 +102,7 @@
             android:maxLines="2"
             android:textColor="@color/Black_light"
             android:textSize="14dp" />
-    </TableLayout>
+
+    </RelativeLayout>
 
 </RelativeLayout>

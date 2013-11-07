@@ -34,7 +34,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener,
 		OnSeekCompleteListener, OnPreparedListener, OnCompletionListener,
 		OnInflateListener, OnSeekBarChangeListener, OnBufferingUpdateListener,
 		OnErrorListener {
-	private final String tag = this.getClass().getSimpleName();
+	private final String tag = ((Object)this).getClass().getSimpleName();
 	private View view;
 	private Context context;
 	private TextView tv1, tv3, timePassed, timeTotal;

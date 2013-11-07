@@ -34,7 +34,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 
 public class PodListFragment extends Fragment implements OnItemClickListener {
-	private final String tag = this.getClass().getSimpleName();
+	private final String tag = ((Object)this).getClass().getSimpleName();
 	private View view;
 	private Context context;
 	private ListView ListOfPodcast;

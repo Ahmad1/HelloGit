@@ -10,8 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ItemListAdapter extends BaseAdapter {
 
@@ -20,10 +23,11 @@ public class ItemListAdapter extends BaseAdapter {
 
 	private LayoutInflater myInflater;
 	private List<PodCast> ItemsList;
+    private Context mContext;
 
 	public ItemListAdapter(Context context, List<PodCast> ItemsList) {
 		myInflater = LayoutInflater.from(context);
-
+        mContext = context;
 		this.ItemsList = ItemsList;
 		//Log.i(TAG, "Adapter has been setup successfully.");
 	}
@@ -57,6 +61,8 @@ public class ItemListAdapter extends BaseAdapter {
 			holder.tvtime = (TextView) convertView.findViewById(R.id.tvTime);
 			holder.tvSum = (TextView) convertView.findViewById(R.id.tvSum);
 			holder.tvDate = (TextView) convertView.findViewById(R.id.tvDate);
+            holder.menu = (ImageButton) convertView.findViewById(R.id.menu);
+            holder.englishCafe = (ImageView) convertView.findViewById(R.id.cafe);
 
 			convertView.setTag(holder);
 		} else {
@@ -67,17 +73,31 @@ public class ItemListAdapter extends BaseAdapter {
 		holder.tvtime.setText(ItemsList.get(position).getDuration());
 		holder.tvSum.setText(ItemsList.get(position).getSummary());
 		holder.tvDate.setText(ItemsList.get(position).getDate());
-
+        if (ItemsList.get(position).getTitle().toLowerCase().contains("english cafe")) {
+            holder.englishCafe.setVisibility(View.VISIBLE);
+            holder.tvSum.setMaxLines(4);
+        } else {
+            holder.englishCafe.setVisibility(View.GONE);
+            holder.tvSum.setMaxLines(2);
+        }
+        holder.menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("@@@", "menu clicked");
+                Toast.makeText(mContext, "Some menue Items", Toast.LENGTH_LONG).show();
+            }
+        });
 		return convertView;
 	}
 
 	static class ViewHolder {
-		public TextView tvSum;
-		public TextView tvtime;
+		TextView tvSum;
+		TextView tvtime;
 		RelativeLayout rlContainer;
 		TextView tvtitle;
 		TextView tvDate;
-
+        ImageButton menu;
+        ImageView englishCafe;
 	}
 
 }
