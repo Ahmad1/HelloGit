@@ -33,7 +33,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
-public class PodListFragment extends Fragment implements OnItemClickListener {
+
+public class PodListFragment extends Fragment {
 	private final String tag = ((Object)this).getClass().getSimpleName();
 	private View view;
 	private Context context;
@@ -56,19 +57,25 @@ public class PodListFragment extends Fragment implements OnItemClickListener {
 		view = inflater.inflate(R.layout.pod_list_fragment, container, false);
 		ListOfPodcast = (ListView) view.findViewById(R.id.listView);
 		progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+
+       /* // Look up the AdView as a resource and load a request.
+        AdView adView = (AdView) view.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("AC98C820A50B4AD8A2106EDE96FB87D4").build();
+        adView.loadAd(adRequest);*/
+
 		// TODO figureOut the visibility of progress bar container
 
 		if (getConnectionStatus())
 			getDataFromInternet();
 		ListOfPodcast.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View view,
-					int position, long arg3) {
-				PodCast selectedItem = (PodCast) mAdapter.getItem(position);
-				Log.i(tag, selectedItem.getTitle() + " selected Item");
-				callBack.onItemSelected(selectedItem);
-			}
-		});
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View view,
+                                    int position, long arg3) {
+                PodCast selectedItem = (PodCast) mAdapter.getItem(position);
+                Log.i(tag, selectedItem.getTitle() + " clicked Item");
+                callBack.onItemSelected(selectedItem);
+            }
+        });
 		return view;
 	}
 
@@ -241,12 +248,5 @@ public class PodListFragment extends Fragment implements OnItemClickListener {
 		public void onItemSelected(PodCast podcast);
 	}
 
-	@Override
-	public void onItemClick(AdapterView<?> arg0, View view, int position,
-			long arg3) {
-		PodCast selectedItem = (PodCast) mAdapter.getItem(position);
-		callBack.onItemSelected(selectedItem);
-
-	}
 
 }

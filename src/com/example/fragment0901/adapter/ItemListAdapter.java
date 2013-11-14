@@ -1,20 +1,18 @@
 package com.example.fragment0901.adapter;
 
-import java.util.List;
-
-import com.example.fragment0901.R;
-
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.fragment0901.R;
+
+import java.util.List;
 
 public class ItemListAdapter extends BaseAdapter {
 
@@ -55,15 +53,14 @@ public class ItemListAdapter extends BaseAdapter {
 			convertView = myInflater.inflate(R.layout.row, null);
 			holder = new ViewHolder();
 
-			holder.rlContainer = (RelativeLayout) convertView
-					.findViewById(R.id.rlContainer);
+			holder.rlContainer = (RelativeLayout) convertView.findViewById(R.id.rlContainer);
 			holder.tvtitle = (TextView) convertView.findViewById(R.id.tvTitle);
 			holder.tvtime = (TextView) convertView.findViewById(R.id.tvTime);
 			holder.tvSum = (TextView) convertView.findViewById(R.id.tvSum);
 			holder.tvDate = (TextView) convertView.findViewById(R.id.tvDate);
-            holder.menu = (ImageButton) convertView.findViewById(R.id.menu);
+            holder.menu = (ImageView) convertView.findViewById(R.id.menu);
             holder.englishCafe = (ImageView) convertView.findViewById(R.id.cafe);
-
+            holder.favorite = (ImageView) convertView.findViewById(R.id.favorite_button);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -80,11 +77,20 @@ public class ItemListAdapter extends BaseAdapter {
             holder.englishCafe.setVisibility(View.GONE);
             holder.tvSum.setMaxLines(2);
         }
+        holder.favorite.setBackgroundResource(position%2 == 0? android.R.drawable.btn_star_big_on: android.R.drawable.btn_star_big_off);
+        holder.favorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(mContext, "Favorite btn clicked ", Toast.LENGTH_SHORT).show();
+            }
+        });
         holder.menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("@@@", "menu clicked");
-                Toast.makeText(mContext, "Some menue Items", Toast.LENGTH_LONG).show();
+                RelativeLayout row = (RelativeLayout) v.getParent();
+                String ttl = ((TextView) row.findViewById(R.id.tvTitle)).getText().toString();
+                // TODO show menu Items such as Download, Delete, Mark heard/Unheard
+                Toast.makeText(mContext, "Some menu Items for Item " + ttl, Toast.LENGTH_SHORT).show();
             }
         });
 		return convertView;
@@ -96,8 +102,7 @@ public class ItemListAdapter extends BaseAdapter {
 		RelativeLayout rlContainer;
 		TextView tvtitle;
 		TextView tvDate;
-        ImageButton menu;
-        ImageView englishCafe;
+        ImageView englishCafe,menu, favorite;
 	}
 
 }

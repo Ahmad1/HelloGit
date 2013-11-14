@@ -14,7 +14,7 @@
     <color name="sub_title">#6D6DFF</color>
     <color name="bg_setting">#212121</color>
     <color name="bg_list_dark">#FFE5E5E5</color>
-    <color name= "dark_green">#239b07</color>
+    <color name= "dark_green">#ff8fb48c</color>
     <color name= "light_green">#eefaeb</color>
 
 </resources>

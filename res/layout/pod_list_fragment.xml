@@ -2,6 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_green"
+    android:padding="5dp"
     tools:context=".MainActivity" >
 
 
@@ -15,9 +17,9 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:divider="@null"
+            android:focusable="true"
             android:dividerHeight="0dp"
-            android:scrollbarSize="50dp" >
-        </ListView>
+            android:scrollbarSize="50dp" />
     </LinearLayout>
 
     <RelativeLayout
@@ -33,9 +35,6 @@
             android:layout_height="45dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true" />
-
-        
-
     </RelativeLayout>
 
 
