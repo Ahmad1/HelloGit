@@ -13,7 +13,8 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import com.example.fragment0901.R;
 import com.example.fragment0901.adapter.ItemListAdapter;
-import com.example.fragment0901.adapter.PodCast;
+import com.example.fragment0901.utils.CallBacksInterface;
+import com.example.fragment0901.utils.PodCast;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -42,12 +43,12 @@ public class PodListFragment extends Fragment {
 	private ItemListAdapter mAdapter;
 	private static List<PodCast> PodcastList;
 	private ProgressBar progressBar;
-	private CallBacks callBack;
+	private CallBacksInterface callBack;
 
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		callBack = (CallBacks) getActivity();
+		callBack = (CallBacksInterface) getActivity();
 	}
 
 	@Override
@@ -65,8 +66,10 @@ public class PodListFragment extends Fragment {
 
 		// TODO figureOut the visibility of progress bar container
 
-		if (getConnectionStatus())
-			getDataFromInternet();
+		if (getConnectionStatus()){
+            // TODO Show progressDialog instead of simple progress bar
+            getDataFromInternet();
+        }
 		ListOfPodcast.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View view,
@@ -243,10 +246,5 @@ public class PodListFragment extends Fragment {
 		mAdapter = new ItemListAdapter(context, PodcastList);
 		ListOfPodcast.setAdapter(mAdapter);
 	}
-
-	public interface CallBacks {
-		public void onItemSelected(PodCast podcast);
-	}
-
 
 }

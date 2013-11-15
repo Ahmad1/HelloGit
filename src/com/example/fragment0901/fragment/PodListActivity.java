@@ -19,9 +19,10 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import com.example.fragment0901.R;
-import com.example.fragment0901.adapter.PodCast;
+import com.example.fragment0901.utils.CallBacksInterface;
+import com.example.fragment0901.utils.PodCast;
 
-public class PodListActivity extends FragmentActivity implements PodListFragment.CallBacks {
+public class PodListActivity extends FragmentActivity implements CallBacksInterface {
     private static final int LARGE_SCREEN_WIDTH_600DP = 600;
     private String tag = ((Object)this).getClass().getSimpleName();
 	private TextView connectionError;
@@ -38,10 +39,7 @@ public class PodListActivity extends FragmentActivity implements PodListFragment
 			setContentView(R.layout.activity_pod_list);
 			detailFrame = (FrameLayout) findViewById(R.id.detailFrame);
 			twoPane = (detailFrame != null && detailFrame.getVisibility() == View.VISIBLE);
-            Log.i(tag, twoPane + " :TwoPane ## selected Item");
-            Log.i(tag, (detailFrame != null) + " :detailFrame != null ## selected Item");
-            Log.i(tag, (detailFrame.getVisibility() == View.VISIBLE) + " :Visible ## selected Item");
-			
+
 		} else {
 			setContentView(R.layout.noconnection);
 			connectionError = (TextView) findViewById(R.id.connection_error);
