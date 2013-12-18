@@ -15,6 +15,7 @@
             android:id="@+id/btn_update"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableRight="@drawable/refresh"
             android:textColor="@color/White"
             android:gravity="left"
             android:paddingLeft="15dp"

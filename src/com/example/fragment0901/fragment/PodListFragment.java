@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -205,8 +207,11 @@ public class PodListFragment extends Fragment {
 				// save response as string and use it until user wants to
 				// update.
 				String xmlResponse = convertStreamToString(getInputStream(url));
-				lastUpdated = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-                lastUpdated = "Last Updated: " + lastUpdated;
+                DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
+                lastUpdated = df.format(Calendar.getInstance().getTime());
+                if (DEBUG)
+                    Log.e(tag, "lastUpdated: " + lastUpdated);
+                lastUpdated = "Last Updated:  " + lastUpdated;
 				SharedPreferences.Editor editor = mSharedPref.edit();
 				editor.putString(XML_RESPONSE_STRING, xmlResponse);
 				editor.putString(LAST_UPDATED, lastUpdated);

@@ -36,6 +36,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.example.fragment0901.R;
+import com.example.fragment0901.utils.ESLNotificationManager;
 
 public class PodExpandFragment extends Fragment implements OnClickListener, OnSeekCompleteListener, OnPreparedListener,
 		OnCompletionListener, OnInflateListener, OnSeekBarChangeListener, OnBufferingUpdateListener, OnErrorListener {
@@ -51,6 +52,8 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 	private static String summary;
 	private static String link;
 	private static String time;
+
+    private ESLNotificationManager mESLNotificationManager;
 
 
 	private boolean isPausedInCall = false;
@@ -79,6 +82,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 		summary = extras.getString("summary");
 		time = extras.getString("time");
 
+        mESLNotificationManager = new ESLNotificationManager(context , title);
 		tv1.setText(title);
 		tv3.setText(summary);
 		back.setOnClickListener(this);
@@ -212,7 +216,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 		case R.id.imageButton1:
 			if (!mp.isPlaying()) {
 				playMedia();
-                addNotification();
+                mESLNotificationManager.addNotification();
 			} else if (mp.isPlaying()) {
 				pauseMedia();
 			}
@@ -344,25 +348,6 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 		return finalTimerString.toString();
 	}
 
-    public void addNotification() {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context).setSmallIcon(R.drawable.ic_launcher)
-                .setContentTitle("ESL").setContentText(title).setPriority(Notification.PRIORITY_HIGH);
-
-        Intent notificationIntent = new Intent(context, NotificationActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(contentIntent);
-
-        // Add as notification
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(1994, builder.build());
-    }
-
-    public void removeNotification() {
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.cancel(1994);
-    }
-
 	@Override
 	public void onDestroyView() {
 		// TODO Auto-generated method stub
@@ -372,7 +357,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 		}
 		handler.removeCallbacks(sendUpdatesToUI);
 		mp.release();
-	    removeNotification();
+	    mESLNotificationManager.removeNotification();
 	}
 
 }
