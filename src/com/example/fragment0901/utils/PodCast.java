@@ -10,10 +10,11 @@ public class PodCast {
 	private String date;
 
 	public static final String URL = "http://feeds.feedburner.com/EnglishAsASecondLanguagePodcast";
-	// public static final String URL = "http://www.eslpod.com/past.xml";
-	
-	// http://feeds.feedburner.com/EnglishAsASecondLanguagePodcast
+
+    // public static final String URL = "http://www.eslpod.com/past.xml";
+    // http://feeds.feedburner.com/EnglishAsASecondLanguagePodcast
 	// http://www.radiofarda.com/podcast/?count=50&zoneId=3157
+    // http://www.eslpod.com/feed.xml
 	
 	public PodCast(String title, String summary, String link, String duration, String date) {
 		this.title = title;
@@ -67,5 +68,4 @@ public class PodCast {
 		return "TITLE: " + title + ", SUMMARY: " + summary + "TIME: "+ duration +"LINK: "+ link;
 	}
 
-	 String abc = PodCast.URL;
 }

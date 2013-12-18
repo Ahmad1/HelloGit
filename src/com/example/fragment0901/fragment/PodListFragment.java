@@ -1,24 +1,24 @@
 package com.example.fragment0901.fragment;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import com.example.fragment0901.R;
-import com.example.fragment0901.adapter.ItemListAdapter;
-import com.example.fragment0901.utils.CallBacksInterface;
-import com.example.fragment0901.utils.PodCast;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -31,19 +31,32 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.example.fragment0901.R;
+import com.example.fragment0901.adapter.ItemListAdapter;
+import com.example.fragment0901.utils.CallBacksInterface;
+import com.example.fragment0901.utils.PodCast;
 
 public class PodListFragment extends Fragment {
-	private final String tag = ((Object)this).getClass().getSimpleName();
+	private final String tag = ((Object) this).getClass().getSimpleName();
 	private View view;
 	private Context context;
 	private ListView ListOfPodcast;
+	private Button updateBtn;
 	private ItemListAdapter mAdapter;
-	private static List<PodCast> PodcastList;
+	private List<PodCast> PodcastList;
 	private ProgressBar progressBar;
 	private CallBacksInterface callBack;
+	private SharedPreferences mSharedPref;
+	private final String XML_RESPONSE_STRING = "xmlResponse";
+	private final String LAST_UPDATED = "lastUpdated";
+	private String sharedResponse;
+	private String lastUpdated;
+	private boolean DEBUG = PodListActivity.loggingEnabled();
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -52,41 +65,70 @@ public class PodListFragment extends Fragment {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		context = getActivity();
+		mSharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+
 		view = inflater.inflate(R.layout.pod_list_fragment, container, false);
 		ListOfPodcast = (ListView) view.findViewById(R.id.listView);
 		progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
-
-       /* // Look up the AdView as a resource and load a request.
-        AdView adView = (AdView) view.findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice("AC98C820A50B4AD8A2106EDE96FB87D4").build();
-        adView.loadAd(adRequest);*/
+		updateBtn = (Button) view.findViewById(R.id.btn_update);
+		updateBtn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (getConnectionStatus()) {
+					ListOfPodcast.setVisibility(View.GONE);
+					progressBar.setVisibility(View.VISIBLE);
+					getDataFromInternet();
+				} else {
+					// show activity A noConnection Button
+					Toast.makeText(context, "no Connection!", Toast.LENGTH_LONG);
+				}
+			}
+		});
+		/*
+		 * // Look up the AdView as a resource and load a request. AdView adView
+		 * = (AdView) view.findViewById(R.id.adView); AdRequest adRequest = new
+		 * AdRequest
+		 * .Builder().addTestDevice("AC98C820A50B4AD8A2106EDE96FB87D4").build();
+		 * adView.loadAd(adRequest);
+		 */
 
 		// TODO figureOut the visibility of progress bar container
 
-		if (getConnectionStatus()){
-            // TODO Show progressDialog instead of simple progress bar
-            getDataFromInternet();
-        }
+		if (getConnectionStatus()) {
+			if (mSharedPref != null) {
+				lastUpdated = mSharedPref.getString(LAST_UPDATED, null);
+				sharedResponse = mSharedPref.getString(XML_RESPONSE_STRING, null);
+			}
+			if (sharedResponse != null) {
+				Log.i(tag, "loading from shared prefs");
+				if (PodcastList == null)
+					PodcastList = getLatestItems(true);
+				displayData();
+			} else {
+				// TODO Show progressDialog instead of simple progress bar
+				if (DEBUG)
+					Log.i(tag, "loading from internet");
+				getDataFromInternet();
+			}
+		}
+
 		ListOfPodcast.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View view,
-                                    int position, long arg3) {
-                PodCast selectedItem = (PodCast) mAdapter.getItem(position);
-                Log.i(tag, selectedItem.getTitle() + " clicked Item");
-                callBack.onItemSelected(selectedItem);
-            }
-        });
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
+				PodCast selectedItem = (PodCast) mAdapter.getItem(position);
+				Log.i(tag, selectedItem.getTitle() + " clicked Item");
+				callBack.onItemSelected(selectedItem);
+			}
+		});
 		return view;
 	}
 
 	private boolean getConnectionStatus() {
 		boolean found = false;
-		ConnectivityManager cm = (ConnectivityManager) context
-				.getApplicationContext().getSystemService(
-						Context.CONNECTIVITY_SERVICE);
+		ConnectivityManager cm = (ConnectivityManager) context.getApplicationContext().getSystemService(
+				Context.CONNECTIVITY_SERVICE);
 		NetworkInfo netInfo = cm.getActiveNetworkInfo();
 		if (netInfo != null && netInfo.isConnected()) {
 			found = true;
@@ -98,9 +140,9 @@ public class PodListFragment extends Fragment {
 	private void getDataFromInternet() {
 		if (getConnectionStatus()) {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				new MyAsyncTask().executeOnExecutor(
-						AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
-				// Log.i(TAG, "Bulid version >= HoneyComb");
+				new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
+				if (DEBUG)
+					Log.i(tag, "Bulid version >= HoneyComb");
 			} else {
 				new MyAsyncTask().execute();
 			}
@@ -111,8 +153,11 @@ public class PodListFragment extends Fragment {
 
 		protected Boolean doInBackground(Void... Params) {
 			boolean status = false;
-			if (PodcastList == null)
-				PodcastList = getLatestItems();
+			if (DEBUG)
+				Log.i(tag, "myAsyncTask doInBackground.");
+			PodcastList = getLatestItems(false);
+			if (DEBUG)
+				Log.i(tag, "myAsyncTask getLatestItems(false).");
 
 			if (PodcastList != null)
 				status = true;
@@ -122,39 +167,51 @@ public class PodListFragment extends Fragment {
 
 		@Override
 		protected void onPostExecute(Boolean result) {
-			// Log.i(TAG, "myAsyncTask finished its task.");
-
-			progressBar.setVisibility(View.INVISIBLE);
-
+			if (DEBUG)
+				Log.i(tag, "myAsyncTask finished its task.");
 			if (result)
 				displayData();
 		}
 
 	}
 
-	private List<PodCast> getLatestItems() {
+	private List<PodCast> getLatestItems(boolean haveResponse) {
 		List<PodCast> list = new ArrayList<PodCast>();
-		String connection = PodCast.URL;
-		// TODO make a new parser class
+
 		try {
-			URL url = new URL(connection);
-			// Log.i(TAG, "Try to open: " + connection);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-			int responseCode = conn.getResponseCode();
-			// Log.i(TAG, "Response code is: " + responseCode);
-
-			if (responseCode != HttpURLConnection.HTTP_OK) {
-				// Log.e(TAG, "Couldn't open connection in getLatestItems()");
-				return null;
-			}
 
 			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 			factory.setNamespaceAware(false);
 			XmlPullParser xpp = factory.newPullParser();
 
-			// We will get the XML from an input stream
-			xpp.setInput(getInputStream(url), "UTF_8");
+			if (haveResponse) {
+				ByteArrayInputStream mInputStream = new ByteArrayInputStream(sharedResponse.getBytes());
+				xpp.setInput(mInputStream, "UTF_8");
+			} else {
+				String connection = PodCast.URL;
+				URL url = new URL(connection);
+				if (DEBUG)
+					Log.i(tag, "Try to open: " + connection);
+				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+				int responseCode = conn.getResponseCode();
+				if (DEBUG)
+					Log.i(tag, "Response code is: " + responseCode);
+				if (responseCode != HttpURLConnection.HTTP_OK) {
+					if (DEBUG)
+						Log.e(tag, "Couldn't open connection in getLatestItems()");
+					return null;
+				}
+				xpp.setInput(getInputStream(url), "UTF_8");
+				// save response as string and use it until user wants to
+				// update.
+				String xmlResponse = convertStreamToString(getInputStream(url));
+				lastUpdated = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+                lastUpdated = "Last Updated: " + lastUpdated;
+				SharedPreferences.Editor editor = mSharedPref.edit();
+				editor.putString(XML_RESPONSE_STRING, xmlResponse);
+				editor.putString(LAST_UPDATED, lastUpdated);
+				editor.commit();
+			}
 
 			// get titles and (links) out of xml
 			String title = null;
@@ -162,8 +219,7 @@ public class PodListFragment extends Fragment {
 			String link = null;
 			String duration = null;
 			String date = null;
-			PodCast resultRow = new PodCast(title, summary, link, duration,
-					date);
+			PodCast resultRow = new PodCast(title, summary, link, duration, date);
 			boolean insideItem = false;
 
 			// Returns the type of current event: START_TAG, END_TAG, etc..
@@ -184,8 +240,7 @@ public class PodListFragment extends Fragment {
 					}
 					if (name.equalsIgnoreCase("pubDate")) {
 
-						resultRow.setDate(xpp.nextText().toString()
-								.substring(0, 16));
+						resultRow.setDate(xpp.nextText().toString().substring(0, 16));
 					}
 					if (name.equalsIgnoreCase("itunes:summary")) {
 						resultRow.setSummary(xpp.nextText().toString());
@@ -195,12 +250,10 @@ public class PodListFragment extends Fragment {
 					}
 					if (name.equalsIgnoreCase("media:content")) {
 						// String tempLink = xpp.getAttributeValue(null, "url");
-						resultRow.setLink(xpp.getAttributeValue(null, "url")
-								.toString());
+						resultRow.setLink(xpp.getAttributeValue(null, "url").toString());
 					}
 					// add resultRow to the list and reset it when hit END_TAG
-				} else if (eventType == XmlPullParser.END_TAG
-						&& xpp.getName().equalsIgnoreCase("item")) {
+				} else if (eventType == XmlPullParser.END_TAG && xpp.getName().equalsIgnoreCase("item")) {
 					// if any one of the attributes were null by this point,
 					// just leave it blank.(prevent null pointer exception!)
 					if (title == null)
@@ -215,8 +268,7 @@ public class PodListFragment extends Fragment {
 						duration = "";
 
 					list.add(resultRow);
-					resultRow = new PodCast(title, summary, link, duration,
-							date);
+					resultRow = new PodCast(title, summary, link, duration, date);
 					insideItem = false;
 				}
 
@@ -226,7 +278,8 @@ public class PodListFragment extends Fragment {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (XmlPullParserException e) {
-			// Log.i(TAG, "Error in parsing xml...");
+			if (DEBUG)
+				Log.i(tag, "Error in parsing xml...");
 			e.printStackTrace();
 		}
 
@@ -242,9 +295,24 @@ public class PodListFragment extends Fragment {
 		}
 	}
 
+	private String convertStreamToString(java.io.InputStream is) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		StringBuilder out = new StringBuilder();
+		String newLine = System.getProperty("line.separator");
+		String line;
+		while ((line = reader.readLine()) != null) {
+			out.append(line);
+			out.append(newLine);
+		}
+		return out.toString();
+	}
+
 	private void displayData() {
+		progressBar.setVisibility(View.INVISIBLE);
 		mAdapter = new ItemListAdapter(context, PodcastList);
 		ListOfPodcast.setAdapter(mAdapter);
+		ListOfPodcast.setVisibility(View.VISIBLE);
+		updateBtn.setText(lastUpdated);
 	}
 
 }

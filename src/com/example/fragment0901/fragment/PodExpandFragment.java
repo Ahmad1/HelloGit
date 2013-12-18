@@ -2,7 +2,13 @@ package com.example.fragment0901.fragment;
 
 import java.io.IOException;
 
+import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnBufferingUpdateListener;
@@ -13,6 +19,7 @@ import android.media.MediaPlayer.OnSeekCompleteListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -30,23 +37,21 @@ import android.widget.TextView;
 
 import com.example.fragment0901.R;
 
-public class PodExpandFragment extends Fragment implements OnClickListener,
-		OnSeekCompleteListener, OnPreparedListener, OnCompletionListener,
-		OnInflateListener, OnSeekBarChangeListener, OnBufferingUpdateListener,
-		OnErrorListener {
-	private final String tag = ((Object)this).getClass().getSimpleName();
+public class PodExpandFragment extends Fragment implements OnClickListener, OnSeekCompleteListener, OnPreparedListener,
+		OnCompletionListener, OnInflateListener, OnSeekBarChangeListener, OnBufferingUpdateListener, OnErrorListener {
+	private final String tag = ((Object) this).getClass().getSimpleName();
 	private View view;
 	private Context context;
 	private TextView tv1, tv3, timePassed, timeTotal;
 	private SeekBar sBar;
-	private ImageButton btnPlay, btnffd, btnrwnd, download, back;
+	private ImageButton btnPlay, btnFFd, btnRwnd, download, back;
 	// private View line;
 	private ProgressBar prepareProgress;
-	private PodExpandActivity mPodExpandActivity;
-	private static String title;
+    private static String title;
 	private static String summary;
 	private static String link;
 	private static String time;
+
 
 	private boolean isPausedInCall = false;
 	private PhoneStateListener phoneStateListener;
@@ -56,25 +61,24 @@ public class PodExpandFragment extends Fragment implements OnClickListener,
 
 	public MediaPlayer mp;
 	private final Handler handler = new Handler();
-
+    private boolean DEBUG = PodListActivity.loggingEnabled();
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		Log.e(tag, "onCreateView");
 		context = getActivity();
 		view = inflater.inflate(R.layout.pod_expand_fragment, container, false);
 		initialViews();
 		mp = new MediaPlayer();
-		
+
 		Bundle extras = this.getArguments();
 		Log.e(tag, "getArguments, title= " + extras.getString("title"));
-		
+
 		title = extras.getString("title");
 		link = extras.getString("link");
 		summary = extras.getString("summary");
 		time = extras.getString("time");
-		
+
 		tv1.setText(title);
 		tv3.setText(summary);
 		back.setOnClickListener(this);
@@ -101,7 +105,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener,
 
 		timeTotal.setText(time);
 		timePassed.setText("00:00");
-		
+
 		return view;
 	}
 
@@ -114,19 +118,23 @@ public class PodExpandFragment extends Fragment implements OnClickListener,
 		timePassed = (TextView) view.findViewById(R.id.timepassed);
 		timeTotal = (TextView) view.findViewById(R.id.timetotal);
 		back = (ImageButton) view.findViewById(R.id.btnback);
-		btnffd = (ImageButton) view.findViewById(R.id.btnfastforward);
-		btnrwnd = (ImageButton) view.findViewById(R.id.btnrewind);
-		prepareProgress = (ProgressBar) view
-				.findViewById(R.id.prepare_progress);
+		btnFFd = (ImageButton) view.findViewById(R.id.btnfastforward);
+		btnRwnd = (ImageButton) view.findViewById(R.id.btnrewind);
+		prepareProgress = (ProgressBar) view.findViewById(R.id.prepare_progress);
 		prepareProgress.setVisibility(View.VISIBLE);
 	}
 
-	public void onPrepared(final MediaPlayer player) {
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+    }
+
+    public void onPrepared(final MediaPlayer player) {
 		prepareProgress.setVisibility(View.INVISIBLE);
 		btnPlay.setBackgroundResource(R.drawable.play);
 		btnPlay.setOnClickListener(this);
-		btnffd.setOnClickListener(this);
-		btnrwnd.setOnClickListener(this);
+		btnFFd.setOnClickListener(this);
+		btnRwnd.setOnClickListener(this);
 
 		mp.setOnCompletionListener(this);
 		mp.setOnSeekCompleteListener(this);
@@ -163,8 +171,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener,
 	}
 
 	@Override
-	public void onProgressChanged(SeekBar seekBar, int progress,
-			boolean fromUser) {
+	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 		if (fromUser) {
 			mp.seekTo(progress);
 			progress = mp.getCurrentPosition();
@@ -205,11 +212,11 @@ public class PodExpandFragment extends Fragment implements OnClickListener,
 		case R.id.imageButton1:
 			if (!mp.isPlaying()) {
 				playMedia();
+                addNotification();
 			} else if (mp.isPlaying()) {
 				pauseMedia();
 			}
-			telephonyManager = (TelephonyManager) context
-					.getSystemService(Context.TELEPHONY_SERVICE);
+			telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 			// Log.v(TAG, "Starting listener");
 			phoneStateListener = new PhoneStateListener() {
 				@Override
@@ -236,8 +243,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener,
 				}
 			};
 
-			telephonyManager.listen(phoneStateListener,
-					PhoneStateListener.LISTEN_CALL_STATE);
+			telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
 
 			break;
 
@@ -264,18 +270,22 @@ public class PodExpandFragment extends Fragment implements OnClickListener,
 			LogMediaPosition();
 			break;
 
-		/*
-		 * case R.id.btnback: Intent a = new Intent(this, MainActivity.class);
-		 * a.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); startActivity(a);
-		 * break;
-		 */
+		case R.id.btnback:
+            if (PodListActivity.getTwoPane()){
+                getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            } else {
+                Intent intent = new Intent(context, PodListActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                // TODO: this flag is not reliable. save state of activity A and return back there. use service for media player.
+                context.startActivity(intent);
+            }
+			break;
 
 		// case R.id.btndownload:
 		// Toast.makeText(getApplicationContext(), " download!",
 		// Toast.LENGTH_SHORT).show();
 		// break;
 		}
-		// mPodExpandActivity.addNotification();
 	}
 
 	private void playMedia() {
@@ -326,15 +336,32 @@ public class PodExpandFragment extends Fragment implements OnClickListener,
 		int seconds = (int) ((milliseconds % (1000 * 60 * 60)) % (1000 * 60) / 1000);
 
 		if (hours > 0) {
-			finalTimerString.append(String.format("%02d", hours)).append(":")
-					.append(String.format("%02d", minutes)).append(":")
-					.append(String.format("%02d", seconds));
+			finalTimerString.append(String.format("%02d", hours)).append(":").append(String.format("%02d", minutes))
+					.append(":").append(String.format("%02d", seconds));
 		} else {
-			finalTimerString.append(String.format("%02d", minutes)).append(":")
-					.append(String.format("%02d", seconds));
+			finalTimerString.append(String.format("%02d", minutes)).append(":").append(String.format("%02d", seconds));
 		}
 		return finalTimerString.toString();
 	}
+
+    public void addNotification() {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context).setSmallIcon(R.drawable.ic_launcher)
+                .setContentTitle("ESL").setContentText(title).setPriority(Notification.PRIORITY_HIGH);
+
+        Intent notificationIntent = new Intent(context, NotificationActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(contentIntent);
+
+        // Add as notification
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(1994, builder.build());
+    }
+
+    public void removeNotification() {
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.cancel(1994);
+    }
 
 	@Override
 	public void onDestroyView() {
@@ -345,7 +372,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener,
 		}
 		handler.removeCallbacks(sendUpdatesToUI);
 		mp.release();
-		// mPodExpandActivity.removeNotification();
+	    removeNotification();
 	}
 
 }
