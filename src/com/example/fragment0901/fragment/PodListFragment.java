@@ -1,22 +1,5 @@
 package com.example.fragment0901.fragment;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -41,7 +24,25 @@ import android.widget.Toast;
 import com.example.fragment0901.R;
 import com.example.fragment0901.adapter.ItemListAdapter;
 import com.example.fragment0901.utils.CallBacksInterface;
+import com.example.fragment0901.utils.ESLConstants;
 import com.example.fragment0901.utils.PodCast;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 public class PodListFragment extends Fragment {
 	private final String tag = ((Object) this).getClass().getSimpleName();
@@ -54,8 +55,6 @@ public class PodListFragment extends Fragment {
 	private ProgressBar progressBar;
 	private CallBacksInterface callBack;
 	private SharedPreferences mSharedPref;
-	private final String XML_RESPONSE_STRING = "xmlResponse";
-	private final String LAST_UPDATED = "lastUpdated";
 	private String sharedResponse;
 	private String lastUpdated;
 	private boolean DEBUG = PodListActivity.loggingEnabled();
@@ -100,8 +99,8 @@ public class PodListFragment extends Fragment {
 
 		if (getConnectionStatus()) {
 			if (mSharedPref != null) {
-				lastUpdated = mSharedPref.getString(LAST_UPDATED, null);
-				sharedResponse = mSharedPref.getString(XML_RESPONSE_STRING, null);
+				lastUpdated = mSharedPref.getString(ESLConstants.LAST_UPDATED, null);
+				sharedResponse = mSharedPref.getString(ESLConstants.XML_RESPONSE_STRING, null);
 			}
 			if (sharedResponse != null) {
 				Log.i(tag, "loading from shared prefs");
@@ -190,7 +189,7 @@ public class PodListFragment extends Fragment {
 				ByteArrayInputStream mInputStream = new ByteArrayInputStream(sharedResponse.getBytes());
 				xpp.setInput(mInputStream, "UTF_8");
 			} else {
-				String connection = PodCast.URL;
+				String connection = ESLConstants.URL;
 				URL url = new URL(connection);
 				if (DEBUG)
 					Log.i(tag, "Try to open: " + connection);
@@ -213,8 +212,8 @@ public class PodListFragment extends Fragment {
                     Log.e(tag, "lastUpdated: " + lastUpdated);
                 lastUpdated = "Last Updated:  " + lastUpdated;
 				SharedPreferences.Editor editor = mSharedPref.edit();
-				editor.putString(XML_RESPONSE_STRING, xmlResponse);
-				editor.putString(LAST_UPDATED, lastUpdated);
+				editor.putString(ESLConstants.XML_RESPONSE_STRING, xmlResponse);
+				editor.putString(ESLConstants.LAST_UPDATED, lastUpdated);
 				editor.commit();
 			}
 

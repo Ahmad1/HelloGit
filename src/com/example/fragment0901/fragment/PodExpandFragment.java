@@ -1,12 +1,7 @@
 package com.example.fragment0901.fragment;
 
-import java.io.IOException;
-
 import android.app.Activity;
 import android.app.FragmentManager;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -19,10 +14,10 @@ import android.media.MediaPlayer.OnSeekCompleteListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,6 +32,8 @@ import android.widget.TextView;
 
 import com.example.fragment0901.R;
 import com.example.fragment0901.utils.ESLNotificationManager;
+
+import java.io.IOException;
 
 public class PodExpandFragment extends Fragment implements OnClickListener, OnSeekCompleteListener, OnPreparedListener,
 		OnCompletionListener, OnInflateListener, OnSeekBarChangeListener, OnBufferingUpdateListener, OnErrorListener {
@@ -72,6 +69,26 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 		context = getActivity();
 		view = inflater.inflate(R.layout.pod_expand_fragment, container, false);
 		initialViews();
+        view.setFocusableInTouchMode(true);
+        view.requestFocus();
+        view.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                Log.e(tag, event.getAction() + " onKey Back listener Fragment B");
+                if( keyCode == KeyEvent.KEYCODE_BACK ) {
+                    if (DEBUG)
+                        Log.e(tag, "onKey Back listener ActivityA");
+                    if (PodListActivity.getTwoPane()){
+                        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    } else {
+                        getActivity().finish();
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
 		mp = new MediaPlayer();
 
 		Bundle extras = this.getArguments();
@@ -83,6 +100,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 		time = extras.getString("time");
 
         mESLNotificationManager = new ESLNotificationManager(context , title);
+
 		tv1.setText(title);
 		tv3.setText(summary);
 		back.setOnClickListener(this);

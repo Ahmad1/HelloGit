@@ -3,12 +3,12 @@ package com.example.fragment0901.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 
 import com.example.fragment0901.R;
+import com.example.fragment0901.utils.ESLConstants;
 
 public class PodExpandActivity extends FragmentActivity  {
 	private String title;
@@ -28,13 +28,16 @@ public class PodExpandActivity extends FragmentActivity  {
 		PodExpandFragment expandFragment = new PodExpandFragment();
 		expandFragment.setArguments(extras);
 
-		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-		transaction.replace(R.id.expandContainer, expandFragment);
-		transaction.commit();
+        if (getFragmentManager().findFragmentByTag(ESLConstants.EXPAND_FRAGMENT) != null) {
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.detach(getSupportFragmentManager().findFragmentByTag(ESLConstants.EXPAND_FRAGMENT));
+            fragmentTransaction.commit();
+        }
 
-		if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-			finish();
-		}
+		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+		transaction.replace(R.id.expandContainer, expandFragment , ESLConstants.EXPAND_FRAGMENT);
+        transaction.addToBackStack(null);
+		transaction.commit();
 	}
 
 	public void getAppOrientation() {
@@ -44,6 +47,5 @@ public class PodExpandActivity extends FragmentActivity  {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		}
 	}
-
 
 }

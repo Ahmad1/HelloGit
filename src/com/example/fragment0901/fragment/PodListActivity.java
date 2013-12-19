@@ -1,6 +1,5 @@
 package com.example.fragment0901.fragment;
 
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -14,7 +13,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -22,10 +20,11 @@ import android.widget.TextView;
 
 import com.example.fragment0901.R;
 import com.example.fragment0901.utils.CallBacksInterface;
+import com.example.fragment0901.utils.ESLConstants;
 import com.example.fragment0901.utils.PodCast;
 
-public class PodListActivity extends FragmentActivity implements CallBacksInterface {
-	private static final int LARGE_SCREEN_WIDTH_600DP = 600;
+public class PodListActivity extends FragmentActivity implements CallBacksInterface{
+
 	private String tag = ((Object) this).getClass().getSimpleName();
 	private TextView connectionError;
 	private Button Retry;
@@ -68,7 +67,7 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
 		float smallestWidthDp = Math.min(width, height) / (metrics.densityDpi / 160f);
         if (DEBUG) Log.i(tag, "min screen width in dp... " + smallestWidthDp);
 
-		if (smallestWidthDp > LARGE_SCREEN_WIDTH_600DP) {
+		if (smallestWidthDp > ESLConstants.LARGE_SCREEN_WIDTH_600DP) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 			twoPane = true;
 		} else {
@@ -84,37 +83,47 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
 	@Override
 	public void onItemSelected(PodCast podcast) {
         if (DEBUG) Log.i(tag, "onItemSelected called");
-		boolean samePodCast = false;
-		if (bundle != null && bundle.getString("title") == podcast.getTitle()) {
+        boolean samePodCast = false;
+        if (bundle != null && bundle.getString("title") == podcast.getTitle()) {
 			samePodCast = true;
 		}
-		if (!samePodCast) {
-			bundle.putString("title", podcast.getTitle());
-			bundle.putString("link", podcast.getLink());
-			bundle.putString("summary", podcast.getSummary());
-			bundle.putString("time", podcast.getDuration());
-			bundle.putString("date", podcast.getDate());
 
-			if (twoPane) {
-				getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-				Fragment podcastDetail = new PodExpandFragment();
-				podcastDetail.setArguments(bundle);
+        if (twoPane){
+            if (!samePodCast ) {
+                bundle.putString("title", podcast.getTitle());
+                bundle.putString("link", podcast.getLink());
+                bundle.putString("summary", podcast.getSummary());
+                bundle.putString("time", podcast.getDuration());
+                bundle.putString("date", podcast.getDate());
+
+                if (getFragmentManager().findFragmentByTag(ESLConstants.EXPAND_FRAGMENT) != null) {
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.detach(getSupportFragmentManager().findFragmentByTag(ESLConstants.EXPAND_FRAGMENT));
+                    fragmentTransaction.commit();
+                }
+                Fragment podcastDetail = new PodExpandFragment();
+                podcastDetail.setArguments(bundle);
+
                 if (DEBUG) Log.i(tag, bundle.getString("title") + " twopane ## selected Item");
-				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-				ft.replace(R.id.detailFrame, podcastDetail);
-				ft.addToBackStack(null);
-				ft.commit();
-			} else {
-				Intent mIntent = new Intent(this, PodExpandActivity.class);
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.detailFrame, podcastDetail, ESLConstants.EXPAND_FRAGMENT);
+                ft.addToBackStack(null);
+                ft.commit();
+            }
+        } else {
+                bundle.putString("title", podcast.getTitle());
+                bundle.putString("link", podcast.getLink());
+                bundle.putString("summary", podcast.getSummary());
+                bundle.putString("time", podcast.getDuration());
+                bundle.putString("date", podcast.getDate());
+
+                Intent mIntent = new Intent(this, PodExpandActivity.class);
                 if (DEBUG) Log.i(tag, bundle.getString("title") + " intent ## selected Item");
-				mIntent.putExtra("selectedItem", bundle);
-				mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(mIntent);
-			}
-		} else {
-            // if it is samePodcast && isPlaying --> just bring it to front
-            finish();
-		}
+                mIntent.putExtra("selectedItem", bundle);
+                mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(mIntent);
+        }
+
 	}
 
 	private boolean getConnectionStatus() {
@@ -128,14 +137,26 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
 		return found;
 	}
 
-	@Override
+    public static boolean loggingEnabled() {
+        return DEBUG;
+    }
+
+	/*@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.pod_list, menu);
 		return true;
 	}
 
-    public static boolean loggingEnabled() {
-        return DEBUG;
-    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_settings:
+                return true;
+            case R.id.rateApp:
+                return true;
+        default:
+                return super.onOptionsItemSelected(item);
+        }
+    }*/
 }

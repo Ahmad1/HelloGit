@@ -13,10 +13,12 @@ import com.example.fragment0901.fragment.NotificationActivity;
 public class ESLNotificationManager {
     private Context context;
     private String title;
+    private NotificationManager manager;
 
     public ESLNotificationManager(Context context, String title) {
         this.context = context;
         this.title = title;
+        manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
     public void addNotification() {
@@ -29,12 +31,12 @@ public class ESLNotificationManager {
         builder.setContentIntent(contentIntent);
 
         // Add as notification
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (manager != null)
         manager.notify(1994, builder.build());
     }
 
     public void removeNotification() {
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (manager != null)
         manager.cancel(1994);
     }
 }

@@ -6,7 +6,7 @@
         android:showAsAction="never"
         android:title="Buy us a bear"/>
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/rateApp"
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="Rate the App"/>
