@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:background="@color/light_green"
-    android:padding="5dp"
+    android:padding="2dp"
     tools:context=".PodListActivity" >
 
     <fragment

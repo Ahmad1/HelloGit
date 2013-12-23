@@ -30,6 +30,7 @@ import com.example.fragment0901.utils.PodCast;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.mediation.admob.AdMobExtras;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -97,11 +98,18 @@ public class PodListFragment extends Fragment {
         adView.setAdUnitId(ESLConstants.MY_AD_UNIT_ID);
         adView.setAdSize(AdSize.BANNER);
 
+        Bundle bundle = new Bundle();
+        bundle.putString("color_bg", "EEFAEB");
+        bundle.putString("color_text", "CCCCCC");
+        AdMobExtras extras = new AdMobExtras(bundle);
+
         LinearLayout adContainer = (LinearLayout) view.findViewById(R.id.adViewContainer);
         adContainer.addView(adView);
 
         // Initiate a generic request.
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice("DEVICE_ID").build();
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("360C7E440C4438C948E375C6C6919C0B").addNetworkExtras(extras).build();
+        // D681537AB6AAA8DEA387EA0C864CBDC7
+        // 360C7E440C4438C948E375C6C6919C0B
 
         // Load the adView with the ad request.
         adView.loadAd(adRequest);
@@ -120,7 +128,6 @@ public class PodListFragment extends Fragment {
 					PodcastList = getLatestItems(true);
 				displayData();
 			} else {
-				// TODO Show progressDialog instead of simple progress bar
 				if (DEBUG)
 					Log.i(tag, "loading from internet");
 				getDataFromInternet();

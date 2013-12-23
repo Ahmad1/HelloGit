@@ -66,7 +66,6 @@
             style="@style/normal_text_black.header2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/favorite_button"
             android:layout_toRightOf="@+id/cafe"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp"
@@ -78,13 +77,6 @@
             android:textColor="@color/Black_light"
             android:textSize="15dp" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/menu"
-            android:layout_marginRight="12dp"
-            android:id="@+id/menu"
-            android:layout_alignParentRight="true" />
 
         <TextView
             android:id="@+id/tvSum"
@@ -102,14 +94,6 @@
             android:textColor="@color/Black_light"
             android:textSize="14dp" />
 
-        <ImageView
-            android:id="@+id/favorite_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/menu"
-            android:layout_toLeftOf="@+id/menu"
-            android:focusable="false"
-            android:background="#00ffffff" />
     </RelativeLayout>
 
 </RelativeLayout>
