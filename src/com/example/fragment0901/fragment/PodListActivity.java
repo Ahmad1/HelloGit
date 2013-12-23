@@ -89,7 +89,7 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
 		}
 
         if (twoPane){
-            if (!samePodCast ) {
+            if (!samePodCast || PodExpandFragment.isDestroyed()) {
                 bundle.putString("title", podcast.getTitle());
                 bundle.putString("link", podcast.getLink());
                 bundle.putString("summary", podcast.getSummary());
@@ -111,19 +111,21 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
                 ft.commit();
             }
         } else {
-                bundle.putString("title", podcast.getTitle());
-                bundle.putString("link", podcast.getLink());
-                bundle.putString("summary", podcast.getSummary());
-                bundle.putString("time", podcast.getDuration());
-                bundle.putString("date", podcast.getDate());
+            if (!samePodCast && PodExpandActivity.expandActivity != null){
+                PodExpandActivity.expandActivity.finish();
+            }
+            bundle.putString("title", podcast.getTitle());
+            bundle.putString("link", podcast.getLink());
+            bundle.putString("summary", podcast.getSummary());
+            bundle.putString("time", podcast.getDuration());
+            bundle.putString("date", podcast.getDate());
 
-                Intent mIntent = new Intent(this, PodExpandActivity.class);
-                if (DEBUG) Log.i(tag, bundle.getString("title") + " intent ## selected Item");
-                mIntent.putExtra("selectedItem", bundle);
-                mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(mIntent);
+            Intent mIntent = new Intent(this, PodExpandActivity.class);
+            if (DEBUG) Log.i(tag, bundle.getString("title") + " intent ## selected Item");
+            mIntent.putExtra("selectedItem", bundle);
+            mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(mIntent);
         }
-
 	}
 
 	private boolean getConnectionStatus() {

@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -26,6 +27,9 @@ import com.example.fragment0901.adapter.ItemListAdapter;
 import com.example.fragment0901.utils.CallBacksInterface;
 import com.example.fragment0901.utils.ESLConstants;
 import com.example.fragment0901.utils.PodCast;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -58,6 +62,7 @@ public class PodListFragment extends Fragment {
 	private String sharedResponse;
 	private String lastUpdated;
 	private boolean DEBUG = PodListActivity.loggingEnabled();
+    private AdView adView;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -87,13 +92,20 @@ public class PodListFragment extends Fragment {
 				}
 			}
 		});
-		/*
-		 * // Look up the AdView as a resource and load a request. AdView adView
-		 * = (AdView) view.findViewById(R.id.adView); AdRequest adRequest = new
-		 * AdRequest
-		 * .Builder().addTestDevice("AC98C820A50B4AD8A2106EDE96FB87D4").build();
-		 * adView.loadAd(adRequest);
-		 */
+
+        adView = new AdView(getActivity());
+        adView.setAdUnitId(ESLConstants.MY_AD_UNIT_ID);
+        adView.setAdSize(AdSize.BANNER);
+
+        LinearLayout adContainer = (LinearLayout) view.findViewById(R.id.adViewContainer);
+        adContainer.addView(adView);
+
+        // Initiate a generic request.
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("DEVICE_ID").build();
+
+        // Load the adView with the ad request.
+        adView.loadAd(adRequest);
+
 
 		// TODO figureOut the visibility of progress bar container
 
@@ -206,11 +218,11 @@ public class PodListFragment extends Fragment {
 				// save response as string and use it until user wants to
 				// update.
 				String xmlResponse = convertStreamToString(getInputStream(url));
-                DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
-                lastUpdated = df.format(Calendar.getInstance().getTime());
-                if (DEBUG)
-                    Log.e(tag, "lastUpdated: " + lastUpdated);
-                lastUpdated = "Last Updated:  " + lastUpdated;
+				DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
+				lastUpdated = df.format(Calendar.getInstance().getTime());
+				if (DEBUG)
+					Log.e(tag, "lastUpdated: " + lastUpdated);
+				lastUpdated = "Last Update:  " + lastUpdated;
 				SharedPreferences.Editor editor = mSharedPref.edit();
 				editor.putString(ESLConstants.XML_RESPONSE_STRING, xmlResponse);
 				editor.putString(ESLConstants.LAST_UPDATED, lastUpdated);
@@ -318,5 +330,23 @@ public class PodListFragment extends Fragment {
 		ListOfPodcast.setVisibility(View.VISIBLE);
 		updateBtn.setText(lastUpdated);
 	}
+
+    @Override
+    public void onPause() {
+        adView.pause();
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        adView.resume();
+    }
+
+    @Override
+    public void onDestroy() {
+        adView.destroy();
+        super.onDestroy();
+    }
 
 }

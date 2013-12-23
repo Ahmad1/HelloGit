@@ -29,6 +29,7 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.fragment0901.R;
 import com.example.fragment0901.utils.ESLNotificationManager;
@@ -42,7 +43,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 	private Context context;
 	private TextView tv1, tv3, timePassed, timeTotal;
 	private SeekBar sBar;
-	private ImageButton btnPlay, btnFFd, btnRwnd, download, back;
+	private ImageButton btnPlay, btnFFd, btnRwnd, share, back;
 	// private View line;
 	private ProgressBar prepareProgress;
     private static String title;
@@ -62,13 +63,15 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 	public MediaPlayer mp;
 	private final Handler handler = new Handler();
     private boolean DEBUG = PodListActivity.loggingEnabled();
+    private static boolean expandFragmentDestroyed;
 
-	@Override
+    @Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		Log.e(tag, "onCreateView");
 		context = getActivity();
 		view = inflater.inflate(R.layout.pod_expand_fragment, container, false);
 		initialViews();
+        expandFragmentDestroyed = false;
         view.setFocusableInTouchMode(true);
         view.requestFocus();
         view.setOnKeyListener(new View.OnKeyListener() {
@@ -89,47 +92,55 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
                 }
             }
         });
-		mp = new MediaPlayer();
-
 		Bundle extras = this.getArguments();
-		Log.e(tag, "getArguments, title= " + extras.getString("title"));
 
-		title = extras.getString("title");
-		link = extras.getString("link");
-		summary = extras.getString("summary");
-		time = extras.getString("time");
+        if (extras != null) {
+            Log.e(tag, "getArguments, title= " + extras.getString("title"));
 
-        mESLNotificationManager = new ESLNotificationManager(context , title);
+            title = extras.getString("title");
+            link = extras.getString("link");
+            summary = extras.getString("summary");
+            time = extras.getString("time");
+        }
+
+        mESLNotificationManager = new ESLNotificationManager(context);
 
 		tv1.setText(title);
 		tv3.setText(summary);
 		back.setOnClickListener(this);
-		mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
-		try {
-			mp.setDataSource(link);
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try {
-			mp.prepareAsync();
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		}
-		mp.setOnPreparedListener(this);
-		mp.setOnBufferingUpdateListener(this);
-		mp.setOnErrorListener(this);
+        share.setOnClickListener(this);
 
-		timeTotal.setText(time);
-		timePassed.setText("00:00");
+        startMediaPlayer();
 
 		return view;
 	}
+
+    private void startMediaPlayer(){
+        mp = new MediaPlayer();
+        mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        try {
+            mp.setDataSource(link);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            mp.prepareAsync();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
+        mp.setOnPreparedListener(this);
+        mp.setOnBufferingUpdateListener(this);
+        mp.setOnErrorListener(this);
+
+        timeTotal.setText(time);
+        timePassed.setText("00:00");
+    }
 
 	private void initialViews() {
 		sBar = (SeekBar) view.findViewById(R.id.seekBar1);
@@ -144,6 +155,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 		btnRwnd = (ImageButton) view.findViewById(R.id.btnrewind);
 		prepareProgress = (ProgressBar) view.findViewById(R.id.prepare_progress);
 		prepareProgress.setVisibility(View.VISIBLE);
+        share = (ImageButton) view.findViewById(R.id.share);
 	}
 
     @Override
@@ -234,10 +246,16 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 		case R.id.imageButton1:
 			if (!mp.isPlaying()) {
 				playMedia();
-                mESLNotificationManager.addNotification();
+                mESLNotificationManager.addNotification(title , PodListActivity.getTwoPane());
+                if (!mp.isPlaying()){
+                    prepareProgress.setVisibility(View.VISIBLE);
+                    btnPlay.setBackgroundResource(R.drawable.stop);
+                    startMediaPlayer();
+                }
 			} else if (mp.isPlaying()) {
 				pauseMedia();
 			}
+
 			telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 			// Log.v(TAG, "Starting listener");
 			phoneStateListener = new PhoneStateListener() {
@@ -291,6 +309,13 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 			}
 			LogMediaPosition();
 			break;
+
+        case R.id.share:
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_TEXT, link);
+            startActivity(Intent.createChooser(shareIntent, "Share Via"));
+            break;
 
 		case R.id.btnback:
             if (PodListActivity.getTwoPane()){
@@ -376,6 +401,11 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 		handler.removeCallbacks(sendUpdatesToUI);
 		mp.release();
 	    mESLNotificationManager.removeNotification();
+        expandFragmentDestroyed = true;
 	}
+
+    public static boolean isDestroyed() {
+        return expandFragmentDestroyed;
+    }
 
 }

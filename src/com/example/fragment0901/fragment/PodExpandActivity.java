@@ -1,5 +1,6 @@
 package com.example.fragment0901.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -15,12 +16,14 @@ public class PodExpandActivity extends FragmentActivity  {
 	private String tag = ((Object) this).getClass().getSimpleName();
     private Context context;
     private boolean DEBUG = PodListActivity.loggingEnabled();
+    public static Activity expandActivity;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
 		// TODO Auto-generated method stub
 		getAppOrientation();
 		super.onCreate(arg0);
+        expandActivity = this;
         context = getApplicationContext();
 		setContentView(R.layout.activity_pod_expand);
 		Intent intent = this.getIntent();
@@ -47,5 +50,4 @@ public class PodExpandActivity extends FragmentActivity  {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		}
 	}
-
 }
