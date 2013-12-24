@@ -32,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.fragment0901.R;
+import com.example.fragment0901.utils.ESLConstants;
 import com.example.fragment0901.utils.ESLNotificationManager;
 
 import java.io.IOException;
@@ -49,6 +50,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
     private static String title;
 	private static String summary;
 	private static String link;
+	private static String shareLink;
 	private static String time;
 
     private ESLNotificationManager mESLNotificationManager;
@@ -97,10 +99,11 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
         if (extras != null) {
             Log.e(tag, "getArguments, title= " + extras.getString("title"));
 
-            title = extras.getString("title");
-            link = extras.getString("link");
-            summary = extras.getString("summary");
-            time = extras.getString("time");
+            title = extras.getString(ESLConstants.TITLE_KEY);
+            link = extras.getString(ESLConstants.LINK_KEY);
+            shareLink = extras.getString(ESLConstants.SHARELINK_KEY);
+            summary = extras.getString(ESLConstants.SUMMARY_KEY);
+            time = extras.getString(ESLConstants.TIME_KEY);
         }
 
         mESLNotificationManager = new ESLNotificationManager(context);
@@ -313,7 +316,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
         case R.id.share:
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
-            shareIntent.putExtra(Intent.EXTRA_TEXT, link);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, shareLink);
             startActivity(Intent.createChooser(shareIntent, "Share Via"));
             break;
 

@@ -242,7 +242,8 @@ public class PodListFragment extends Fragment {
 			String link = null;
 			String duration = null;
 			String date = null;
-			PodCast resultRow = new PodCast(title, summary, link, duration, date);
+            String shareLink = null;
+			PodCast resultRow = new PodCast(title, summary, link, duration, date, shareLink);
 			boolean insideItem = false;
 
 			// Returns the type of current event: START_TAG, END_TAG, etc..
@@ -271,6 +272,9 @@ public class PodListFragment extends Fragment {
 					if (name.equalsIgnoreCase("itunes:duration")) {
 						resultRow.setDuration(xpp.nextText().toString());
 					}
+                    if (name.equalsIgnoreCase("link")) {
+						resultRow.setShareLink(xpp.nextText().toString());
+					}
 					if (name.equalsIgnoreCase("media:content")) {
 						// String tempLink = xpp.getAttributeValue(null, "url");
 						resultRow.setLink(xpp.getAttributeValue(null, "url").toString());
@@ -289,9 +293,11 @@ public class PodListFragment extends Fragment {
 						date = "";
 					if (duration == null)
 						duration = "";
+                    if (shareLink == null)
+						shareLink = "";
 
 					list.add(resultRow);
-					resultRow = new PodCast(title, summary, link, duration, date);
+					resultRow = new PodCast(title, summary, link, duration, date, shareLink);
 					insideItem = false;
 				}
 

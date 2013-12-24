@@ -8,15 +8,17 @@ public class PodCast {
 	private String link;
 	private String duration;
 	private String date;
+    private String shareLink;
 
 
 	
-	public PodCast(String title, String summary, String link, String duration, String date) {
+	public PodCast(String title, String summary, String link, String duration, String date, String shareLink) {
 		this.title = title;
 		this.summary = summary;
 		this.link = link;
 		this.duration = duration;
 		this.date= date;
+        this.shareLink = shareLink;
 	}
 
 	public String getTitle() {
@@ -43,13 +45,20 @@ public class PodCast {
 		this.summary = summary;
 	}
 
-	public String getLink() {
-		return link;
+	public String getshareLink() {
+		return shareLink;
 	}
 
-	public void setLink(String link) {
-		this.link = link;
+	public void setShareLink(String shareLink) {
+		this.shareLink = shareLink;
 	}
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
 	public String getDuration() {
 		return duration;
 	}

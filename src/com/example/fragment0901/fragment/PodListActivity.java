@@ -90,11 +90,12 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
 
         if (twoPane){
             if (!samePodCast || PodExpandFragment.isDestroyed()) {
-                bundle.putString("title", podcast.getTitle());
-                bundle.putString("link", podcast.getLink());
-                bundle.putString("summary", podcast.getSummary());
-                bundle.putString("time", podcast.getDuration());
-                bundle.putString("date", podcast.getDate());
+                bundle.putString(ESLConstants.TITLE_KEY, podcast.getTitle());
+                bundle.putString(ESLConstants.LINK_KEY, podcast.getLink());
+                bundle.putString(ESLConstants.SHARELINK_KEY, podcast.getshareLink());
+                bundle.putString(ESLConstants.SUMMARY_KEY, podcast.getSummary());
+                bundle.putString(ESLConstants.TIME_KEY, podcast.getDuration());
+                bundle.putString(ESLConstants.DATE_KEY, podcast.getDate());
 
                 if (getFragmentManager().findFragmentByTag(ESLConstants.EXPAND_FRAGMENT) != null) {
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -114,11 +115,12 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
             if (!samePodCast && PodExpandActivity.expandActivity != null){
                 PodExpandActivity.expandActivity.finish();
             }
-            bundle.putString("title", podcast.getTitle());
-            bundle.putString("link", podcast.getLink());
-            bundle.putString("summary", podcast.getSummary());
-            bundle.putString("time", podcast.getDuration());
-            bundle.putString("date", podcast.getDate());
+            bundle.putString(ESLConstants.TITLE_KEY, podcast.getTitle());
+            bundle.putString(ESLConstants.LINK_KEY, podcast.getLink());
+            bundle.putString(ESLConstants.SHARELINK_KEY, podcast.getshareLink());
+            bundle.putString(ESLConstants.SUMMARY_KEY, podcast.getSummary());
+            bundle.putString(ESLConstants.TIME_KEY, podcast.getDuration());
+            bundle.putString(ESLConstants.DATE_KEY, podcast.getDate());
 
             Intent mIntent = new Intent(this, PodExpandActivity.class);
             if (DEBUG) Log.i(tag, bundle.getString("title") + " intent ## selected Item");

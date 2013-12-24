@@ -14,6 +14,13 @@ public class ESLConstants {
     public static final String MY_AD_UNIT_ID = "ca-app-pub-9346830887655513/3606456582" ;
     public static final String MY_AD_UNIT_NAME = "Buttom banner" ;
 
+    public static final String TITLE_KEY = "title" ;
+    public static final String LINK_KEY = "link" ;
+    public static final String SHARELINK_KEY = "shareLink" ;
+    public static final String SUMMARY_KEY = "summary" ;
+    public static final String TIME_KEY = "time" ;
+    public static final String DATE_KEY = "date" ;
+
     public static final String URL = "http://feeds.feedburner.com/EnglishAsASecondLanguagePodcast";
 
     // public static final String URL = "http://www.eslpod.com/past.xml";
