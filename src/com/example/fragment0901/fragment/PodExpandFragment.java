@@ -118,6 +118,18 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 		return view;
 	}
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        setupHandler();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        handler.removeCallbacks(sendUpdatesToUI);
+    }
+
     private void startMediaPlayer(){
         mp = new MediaPlayer();
         mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -268,12 +280,16 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 					switch (state) {
 					case TelephonyManager.CALL_STATE_OFFHOOK:
 					case TelephonyManager.CALL_STATE_RINGING:
-						if (mp.isPlaying()) {
-							mp.pause();
-							isPausedInCall = true;
-						}
-						break;
-					case TelephonyManager.CALL_STATE_IDLE:
+                        try{
+
+                            if (mp != null && mp.isPlaying()) {
+                                mp.pause();
+                                isPausedInCall = true;
+                            }
+                            break;
+                        } catch (Exception e ){
+                        }
+                        case TelephonyManager.CALL_STATE_IDLE:
 						// Phone idle. Start playing.
 						if (mp != null) {
 							if (isPausedInCall) {
