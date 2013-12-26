@@ -7,7 +7,7 @@ public class ESLConstants {
     private ESLConstants() {
     }
 
-    public static final int LARGE_SCREEN_WIDTH_600DP = 600;
+    public static final float LARGE_SCREEN_WIDTH_600DP = 550f;
     public static final String EXPAND_FRAGMENT = "expand_fragment";
     public static final String XML_RESPONSE_STRING = "xmlResponse";
     public static final String LAST_UPDATED = "lastUpdated";

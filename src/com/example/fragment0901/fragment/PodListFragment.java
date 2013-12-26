@@ -107,9 +107,10 @@ public class PodListFragment extends Fragment {
         adContainer.addView(adView);
 
         // Initiate a generic request.
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice("360C7E440C4438C948E375C6C6919C0B").addNetworkExtras(extras).build();
-        // D681537AB6AAA8DEA387EA0C864CBDC7
-        // 360C7E440C4438C948E375C6C6919C0B
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("216A459D6468E6AB216E39422AD83457").addNetworkExtras(extras).build();
+        // D681537AB6AAA8DEA387EA0C864CBDC7 N4 phone
+        // 360C7E440C4438C948E375C6C6919C0B Tab II 10"
+        // 216A459D6468E6AB216E39422AD83457 N7 home
 
         // Load the adView with the ad request.
         adView.loadAd(adRequest);
@@ -311,7 +312,8 @@ public class PodListFragment extends Fragment {
 				Log.i(tag, "Error in parsing xml...");
 			e.printStackTrace();
 		}
-
+        if (DEBUG)
+            Log.i(tag, "Done parsing xml..."+ list.size());
 		return list;
 
 	}
@@ -320,6 +322,8 @@ public class PodListFragment extends Fragment {
 		try {
 			return url.openConnection().getInputStream();
 		} catch (IOException e) {
+            if (DEBUG)
+                Log.i(tag, "getInputStream Faild...");
 			return null;
 		}
 	}

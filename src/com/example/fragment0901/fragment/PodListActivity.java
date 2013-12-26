@@ -32,11 +32,16 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
 	private FrameLayout detailFrame;
 	private Bundle bundle = new Bundle();
     private static boolean DEBUG = true;
+    private static boolean firstTime = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setAppOrientation();
+	    if (firstTime){
+            setAppOrientation();
+            firstTime = false;
+        }
+
 		if (getConnectionStatus()) {
 			setContentView(R.layout.activity_pod_list);
 			detailFrame = (FrameLayout) findViewById(R.id.detailFrame);
@@ -59,21 +64,25 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
 	}
 
 	public void setAppOrientation() {
-		Display display = getWindowManager().getDefaultDisplay();
-		int width = display.getWidth();
-		int height = display.getHeight();
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width=dm.widthPixels;
+        int height=dm.heightPixels;
+        if (DEBUG) Log.i(tag, "@screen width int... " + width);
+        if (DEBUG) Log.i(tag, " @screen height int... " + height);
 		Resources resources = this.getResources();
 		DisplayMetrics metrics = resources.getDisplayMetrics();
 		float smallestWidthDp = Math.min(width, height) / (metrics.densityDpi / 160f);
-        if (DEBUG) Log.i(tag, "min screen width in dp... " + smallestWidthDp);
+        if (DEBUG) Log.i(tag, "min @screen width in dp... " + smallestWidthDp);
 
-		if (smallestWidthDp > ESLConstants.LARGE_SCREEN_WIDTH_600DP) {
+		if (smallestWidthDp >= ESLConstants.LARGE_SCREEN_WIDTH_600DP) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 			twoPane = true;
 		} else {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 			twoPane = false;
 		}
+        if (DEBUG) Log.i(tag, "@screen Done setting orientation... twoPane: " + twoPane);
 	}
 
 	public static boolean getTwoPane() {
