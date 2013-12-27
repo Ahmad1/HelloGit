@@ -17,7 +17,7 @@
         android:includeFontPadding="true"
         android:maxLines="3"
         android:textColor="@color/dark_green"
-        android:textSize="14dp" />
+        android:textSize="@dimen/list_text_size" />
 
     <TextView
         android:id="@+id/tvTime"
@@ -30,7 +30,7 @@
         android:hint="@string/time"
         android:maxLines="1"
         android:textColor="@color/dark_green"
-        android:textSize="14dp" />
+        android:textSize="@dimen/list_text_size" />
 
     <View
         android:layout_width="fill_parent"
@@ -75,7 +75,7 @@
             android:maxLines="1"
             android:includeFontPadding="true"
             android:textColor="@color/Black_light"
-            android:textSize="15dp" />
+            android:textSize="@dimen/list_text_size" />
 
 
         <TextView
@@ -92,7 +92,7 @@
             android:includeFontPadding="true"
             android:maxLines="2"
             android:textColor="@color/Black_light"
-            android:textSize="14dp" />
+            android:textSize="@dimen/list_text_size" />
 
     </RelativeLayout>
 

@@ -45,7 +45,7 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
 		if (getConnectionStatus()) {
 			setContentView(R.layout.activity_pod_list);
 			detailFrame = (FrameLayout) findViewById(R.id.detailFrame);
-			twoPane = (detailFrame != null && detailFrame.getVisibility() == View.VISIBLE);
+			// twoPane = (detailFrame != null && detailFrame.getVisibility() == View.VISIBLE);
 
 		} else {
 			setContentView(R.layout.noconnection);

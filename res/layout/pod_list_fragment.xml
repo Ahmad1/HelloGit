@@ -14,8 +14,9 @@
             android:drawableRight="@drawable/refresh"
             android:layout_alignParentTop="true"
             android:textColor="@color/White"
-            android:gravity="left"
+            android:gravity="left|center_vertical"
             android:paddingLeft="12dp"
+            android:textSize="@dimen/list_text_size"
             />
 
         <ListView

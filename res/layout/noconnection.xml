@@ -12,6 +12,7 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:minHeight="64dp"
+            android:textSize="@dimen/list_text_size"
             android:text="@string/retry" />
 
         <TextView
@@ -21,6 +22,7 @@
             android:layout_above="@+id/retry"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="15dp"
+            android:textSize="@dimen/list_text_size"
             android:text="@string/nonetwork" />
 
 </RelativeLayout>

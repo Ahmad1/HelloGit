@@ -10,7 +10,7 @@
         android:name="com.example.fragment0901.fragment.PodListFragment"
         android:layout_width="0dp"
         android:layout_height="fill_parent"
-        android:layout_weight="1"
+        android:layout_weight="1.4"
         tools:layout="@layout/pod_list_fragment" />
 
     <FrameLayout
