@@ -21,7 +21,7 @@ public class ESLNotificationManager {
     }
 
     public void addNotification(String title , boolean twoPane) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context).setSmallIcon(R.drawable.ic_launcher)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context).setSmallIcon(R.drawable.launcher)
                 .setContentTitle("ESL").setContentText(title).setPriority(Notification.PRIORITY_HIGH);
         Intent notificationIntent;
         if (twoPane){

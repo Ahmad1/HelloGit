@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="12dp"
-            android:background="@drawable/share"
+            android:background="@drawable/ic_action_share"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"/>
     </RelativeLayout>
@@ -105,33 +105,38 @@
 
         <ImageButton
             android:id="@+id/imageButton1"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_centerInParent="true" />
 
-        <ImageButton
+        <Button
             android:id="@+id/btnfastforward"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
             android:layout_toRightOf="@+id/imageButton1"
-            android:background="@drawable/ff" />
+            android:text="@string/plus_ten"
+            android:textSize="12sp"
+            android:textColor="@color/White_transparent"
+            android:background="@drawable/ic_action_rotate_right" />
 
-
-        <ImageButton
+        <Button
             android:id="@+id/btnrewind"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
             android:layout_alignTop="@+id/btnfastforward"
             android:layout_marginRight="20dp"
             android:layout_toLeftOf="@+id/imageButton1"
-            android:background="@drawable/bw" />
+            android:text="@string/minus_ten"
+            android:textSize="12sp"
+            android:textColor="@color/White_transparent"
+            android:background="@drawable/ic_action_rotate_left" />
 
         <ImageButton
             android:id="@+id/btnback"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
@@ -144,6 +149,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/imageButton1"
+            android:layout_marginTop="5dp"
             android:layout_centerHorizontal="true" />
 
     </RelativeLayout>

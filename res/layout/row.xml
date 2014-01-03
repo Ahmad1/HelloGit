@@ -59,7 +59,7 @@
             android:layout_height="120dp"
             android:id="@+id/cafe"
             android:layout_centerVertical="true"
-            android:background="@drawable/cafe" />
+            android:background="@drawable/ecafe" />
 
         <TextView
             android:id="@+id/tvTitle"

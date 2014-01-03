@@ -24,6 +24,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.ViewStub.OnInflateListener;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
@@ -44,7 +45,8 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 	private Context context;
 	private TextView tv1, tv3, timePassed, timeTotal;
 	private SeekBar sBar;
-	private ImageButton btnPlay, btnFFd, btnRwnd, share, back;
+	private ImageButton btnPlay, share, back;
+    private Button btnFFd, btnRwnd;
 	// private View line;
 	private ProgressBar prepareProgress;
     private static String title;
@@ -160,14 +162,14 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 	private void initialViews() {
 		sBar = (SeekBar) view.findViewById(R.id.seekBar1);
 		btnPlay = (ImageButton) view.findViewById(R.id.imageButton1);
-		btnPlay.setBackgroundResource(R.drawable.stop);
+		btnPlay.setBackgroundResource(R.drawable.ic_action_stop);
 		tv1 = (TextView) view.findViewById(R.id.textView1);
 		tv3 = (TextView) view.findViewById(R.id.textView3);
 		timePassed = (TextView) view.findViewById(R.id.timepassed);
 		timeTotal = (TextView) view.findViewById(R.id.timetotal);
 		back = (ImageButton) view.findViewById(R.id.btnback);
-		btnFFd = (ImageButton) view.findViewById(R.id.btnfastforward);
-		btnRwnd = (ImageButton) view.findViewById(R.id.btnrewind);
+		btnFFd = (Button) view.findViewById(R.id.btnfastforward);
+		btnRwnd = (Button) view.findViewById(R.id.btnrewind);
 		prepareProgress = (ProgressBar) view.findViewById(R.id.prepare_progress);
 		prepareProgress.setVisibility(View.VISIBLE);
         share = (ImageButton) view.findViewById(R.id.share);
@@ -180,7 +182,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 
     public void onPrepared(final MediaPlayer player) {
 		prepareProgress.setVisibility(View.INVISIBLE);
-		btnPlay.setBackgroundResource(R.drawable.play);
+		btnPlay.setBackgroundResource(R.drawable.ic_action_play);
 		btnPlay.setOnClickListener(this);
 		btnFFd.setOnClickListener(this);
 		btnRwnd.setOnClickListener(this);
@@ -250,7 +252,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 		mp.seekTo(100);
 		sBar.setProgress(100);
 		pauseMedia();
-		btnPlay.setBackgroundResource(R.drawable.play);
+		btnPlay.setBackgroundResource(R.drawable.ic_action_play);
 		timePassed.setText(milliSecondsToTimer(mp.getCurrentPosition()));
 	}
 
@@ -264,7 +266,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
                 mESLNotificationManager.addNotification(title , PodListActivity.getTwoPane());
                 if (!mp.isPlaying()){
                     prepareProgress.setVisibility(View.VISIBLE);
-                    btnPlay.setBackgroundResource(R.drawable.stop);
+                    btnPlay.setBackgroundResource(R.drawable.ic_action_stop);
                     startMediaPlayer();
                 }
 			} else if (mp.isPlaying()) {
@@ -355,14 +357,14 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 	}
 
 	private void playMedia() {
-		btnPlay.setBackgroundResource(R.drawable.pause);
+		btnPlay.setBackgroundResource(R.drawable.ic_action_pause);
 		mp.start();
 		setupHandler();
 	}
 
 	private void pauseMedia() {
 		if (mp.isPlaying()) {
-			btnPlay.setBackgroundResource(R.drawable.play);
+			btnPlay.setBackgroundResource(R.drawable.ic_action_play);
 			mp.pause();
 		}
 	}

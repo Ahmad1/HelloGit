@@ -7,6 +7,7 @@
     <color name="Trans_Black_Darker">#BB000000</color>
     <color name="bg_TopRecipes">#C0000000</color>
     <color name="White">#FFFFFF</color>
+    <color name="White_transparent">#AAFFFFFF</color>
     <color name="bg_slider">#3B3B3B</color>
     <color name="bg_Panel_Category">#CCCCCC</color>
     <color name="bg_Search">#DDDDDD</color>
