@@ -16,7 +16,7 @@ public class ESLConstants {
 
     public static final String TITLE_KEY = "title" ;
     public static final String LINK_KEY = "link" ;
-    public static final String SHARELINK_KEY = "shareLink" ;
+    public static final String SHARE_LINK_KEY = "shareLink" ;
     public static final String SUMMARY_KEY = "summary" ;
     public static final String TIME_KEY = "time" ;
     public static final String DATE_KEY = "date" ;

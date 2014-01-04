@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -31,7 +30,7 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
 	private static boolean twoPane;
 	private FrameLayout detailFrame;
 	private Bundle bundle = new Bundle();
-    private static boolean DEBUG = true;
+    private static boolean DEBUG = false;
     private static boolean firstTime = true;
 
 	@Override
@@ -101,7 +100,7 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
             if (!samePodCast || PodExpandFragment.isDestroyed()) {
                 bundle.putString(ESLConstants.TITLE_KEY, podcast.getTitle());
                 bundle.putString(ESLConstants.LINK_KEY, podcast.getLink());
-                bundle.putString(ESLConstants.SHARELINK_KEY, podcast.getshareLink());
+                bundle.putString(ESLConstants.SHARE_LINK_KEY, podcast.getshareLink());
                 bundle.putString(ESLConstants.SUMMARY_KEY, podcast.getSummary());
                 bundle.putString(ESLConstants.TIME_KEY, podcast.getDuration());
                 bundle.putString(ESLConstants.DATE_KEY, podcast.getDate());
@@ -126,7 +125,7 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
             }
             bundle.putString(ESLConstants.TITLE_KEY, podcast.getTitle());
             bundle.putString(ESLConstants.LINK_KEY, podcast.getLink());
-            bundle.putString(ESLConstants.SHARELINK_KEY, podcast.getshareLink());
+            bundle.putString(ESLConstants.SHARE_LINK_KEY, podcast.getshareLink());
             bundle.putString(ESLConstants.SUMMARY_KEY, podcast.getSummary());
             bundle.putString(ESLConstants.TIME_KEY, podcast.getDuration());
             bundle.putString(ESLConstants.DATE_KEY, podcast.getDate());

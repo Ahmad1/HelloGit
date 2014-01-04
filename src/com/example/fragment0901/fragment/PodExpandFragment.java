@@ -26,15 +26,19 @@ import android.view.ViewStub;
 import android.view.ViewStub.OnInflateListener;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.fragment0901.R;
 import com.example.fragment0901.utils.ESLConstants;
 import com.example.fragment0901.utils.ESLNotificationManager;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.mediation.admob.AdMobExtras;
 
 import java.io.IOException;
 
@@ -69,9 +73,11 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
     private boolean DEBUG = PodListActivity.loggingEnabled();
     private static boolean expandFragmentDestroyed;
 
+    private AdView adView;
+
     @Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		Log.e(tag, "onCreateView");
+		if (DEBUG) Log.i(tag, "onCreateView");
 		context = getActivity();
 		view = inflater.inflate(R.layout.pod_expand_fragment, container, false);
 		initialViews();
@@ -81,10 +87,10 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
         view.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                Log.e(tag, event.getAction() + " onKey Back listener Fragment B");
+                if (DEBUG) Log.i(tag, event.getAction() + " onKey Back listener Fragment B");
                 if( keyCode == KeyEvent.KEYCODE_BACK ) {
                     if (DEBUG)
-                        Log.e(tag, "onKey Back listener ActivityA");
+                        Log.i(tag, "onKey Back listener ActivityA");
                     if (PodListActivity.getTwoPane()){
                         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     } else {
@@ -99,11 +105,11 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 		Bundle extras = this.getArguments();
 
         if (extras != null) {
-            Log.e(tag, "getArguments, title= " + extras.getString("title"));
+            if (DEBUG) Log.i(tag, "getArguments, title= " + extras.getString("title"));
 
             title = extras.getString(ESLConstants.TITLE_KEY);
             link = extras.getString(ESLConstants.LINK_KEY);
-            shareLink = extras.getString(ESLConstants.SHARELINK_KEY);
+            shareLink = extras.getString(ESLConstants.SHARE_LINK_KEY);
             summary = extras.getString(ESLConstants.SUMMARY_KEY);
             time = extras.getString(ESLConstants.TIME_KEY);
         }
@@ -116,6 +122,24 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
         share.setOnClickListener(this);
 
         startMediaPlayer();
+
+        adView = new AdView(getActivity());
+        adView.setAdUnitId(ESLConstants.MY_AD_UNIT_ID);
+        adView.setAdSize(AdSize.BANNER);
+
+        Bundle bundle = new Bundle();
+        bundle.putString("color_bg", "EEFAEB");
+        bundle.putString("color_text", "CCCCCC");
+        AdMobExtras adExtras = new AdMobExtras(bundle);
+
+        LinearLayout adContainer = (LinearLayout) view.findViewById(R.id.adViewContainerExpand);
+        adContainer.addView(adView);
+
+        // Initiate a generic request.
+        AdRequest adRequest = new AdRequest.Builder().addNetworkExtras(adExtras).build();
+        // .addTestDevice("D681537AB6AAA8DEA387EA0C864CBDC7")
+        // Load the adView with the ad request.
+        adView.loadAd(adRequest);
 
 		return view;
 	}
@@ -200,7 +224,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 	}
 
 	public void onBufferingUpdate(MediaPlayer player, int percent) {
-		// Log.i(TAG, "on Buffering Update" + percent);
+        if (DEBUG) Log.i(tag, "on Buffering Update" + percent);
 		sBar.setMax(mp.getDuration());
 		// transfer percent to media player duration scale
 		sBar.setSecondaryProgress(percent * mp.getDuration() / 100);
@@ -274,11 +298,11 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 			}
 
 			telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-			// Log.v(TAG, "Starting listener");
+            if (DEBUG) Log.v(tag, "Starting listener");
 			phoneStateListener = new PhoneStateListener() {
 				@Override
 				public void onCallStateChanged(int state, String incomingNumber) {
-					// Log.v(TAG, "Starting CallStateChange");
+                    if (DEBUG) Log.v(tag, "Starting CallStateChange");
 					switch (state) {
 					case TelephonyManager.CALL_STATE_OFFHOOK:
 					case TelephonyManager.CALL_STATE_RINGING:
@@ -376,7 +400,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 
 	private Runnable sendUpdatesToUI = new Runnable() {
 		public void run() {
-			// Log.i(TAG, "runnable is running");
+            if (DEBUG) Log.i(tag, "runnable is running");
 			if (mp.isPlaying()) {
 				LogMediaPosition();
 				handler.postDelayed(this, 1000);
@@ -411,6 +435,24 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 		}
 		return finalTimerString.toString();
 	}
+
+    @Override
+    public void onPause() {
+        adView.pause();
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        adView.resume();
+    }
+
+    @Override
+    public void onDestroy() {
+        adView.destroy();
+        super.onDestroy();
+    }
 
 	@Override
 	public void onDestroyView() {
