@@ -31,15 +31,11 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
 	private FrameLayout detailFrame;
 	private Bundle bundle = new Bundle();
     private static boolean DEBUG = false;
-    private static boolean firstTime = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-	    if (firstTime){
             setAppOrientation();
-            firstTime = false;
-        }
 
 		if (getConnectionStatus()) {
 			setContentView(R.layout.activity_pod_list);
