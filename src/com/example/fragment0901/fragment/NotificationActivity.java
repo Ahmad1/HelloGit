@@ -24,4 +24,3 @@ public class NotificationActivity extends Activity {
 	}
 
 }
-

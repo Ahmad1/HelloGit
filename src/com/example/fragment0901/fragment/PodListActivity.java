@@ -71,7 +71,7 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
         if (DEBUG) Log.i(tag, "min @screen width in dp... " + smallestWidthDp);
 
 		if (smallestWidthDp >= ESLConstants.LARGE_SCREEN_WIDTH_600DP) {
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 			twoPane = true;
 		} else {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);

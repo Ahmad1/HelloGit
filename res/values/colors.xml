@@ -17,5 +17,8 @@
     <color name="bg_list_dark">#FFE5E5E5</color>
     <color name= "dark_green">#ff8fb48c</color>
     <color name= "light_green">#eefaeb</color>
+    <color name= "light_green-transparent">#33eefaeb</color>
+    <color name= "light_orange">#f49418</color>
+    <color name= "dark_orange">#caab92</color>
 
 </resources>

@@ -35,6 +35,7 @@ import android.widget.TextView;
 import com.example.fragment0901.R;
 import com.example.fragment0901.utils.ESLConstants;
 import com.example.fragment0901.utils.ESLNotificationManager;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
@@ -65,6 +66,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 	private boolean isPausedInCall = false;
 	private PhoneStateListener phoneStateListener;
 	private TelephonyManager telephonyManager;
+    private LinearLayout adContainer;
 
 	boolean downloaded = true;
 
@@ -77,7 +79,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 
     @Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		if (DEBUG) Log.i(tag, "onCreateView");
+        if (DEBUG) Log.i(tag, "######onCreateActivity, PodExpandFragment");
 		context = getActivity();
 		view = inflater.inflate(R.layout.pod_expand_fragment, container, false);
 		initialViews();
@@ -132,7 +134,8 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
         bundle.putString("color_text", "CCCCCC");
         AdMobExtras adExtras = new AdMobExtras(bundle);
 
-        LinearLayout adContainer = (LinearLayout) view.findViewById(R.id.adViewContainerExpand);
+        adContainer = (LinearLayout) view.findViewById(R.id.adViewContainerExpand);
+        adContainer.setVisibility(View.GONE);
         adContainer.addView(adView);
 
         // Initiate a generic request.
@@ -140,7 +143,13 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
         // .addTestDevice("D681537AB6AAA8DEA387EA0C864CBDC7")
         // Load the adView with the ad request.
         adView.loadAd(adRequest);
-
+        adView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                adContainer.setVisibility(View.VISIBLE);
+            }
+        });
 		return view;
 	}
 
@@ -152,6 +161,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 
     @Override
     public void onStop() {
+        if (DEBUG) Log.i(tag, "######onStop, PodExpandFragment");
         super.onStop();
         handler.removeCallbacks(sendUpdatesToUI);
     }
@@ -450,13 +460,16 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 
     @Override
     public void onDestroy() {
+        if (DEBUG) Log.i(tag, "######onDestroy, PodExpandFragment");
         adView.destroy();
         super.onDestroy();
+        if (!PodListActivity.getTwoPane())
+            getActivity().finish();
     }
 
 	@Override
 	public void onDestroyView() {
-		// TODO Auto-generated method stub
+        if (DEBUG) Log.i(tag, "######onDestroyView, PodExpandFragment");
 		super.onDestroyView();
 		if (mp.isPlaying()) {
 			mp.stop();

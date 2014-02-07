@@ -11,25 +11,20 @@
     <uses-feature
         android:name="android.hardware.telephony"
         android:required="false" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+
+    <uses-permission
+        android:name="android.permission.READ_PHONE_STATE"
+        android:required="false" />
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
-    <compatible-screens>
-        <screen android:screenSize="normal" android:screenDensity="mdpi"/>
-        <screen android:screenSize="normal" android:screenDensity="hdpi"/>
-        <screen android:screenSize="normal" android:screenDensity="xhdpi"/>
-
-        <screen android:screenSize="large" android:screenDensity="ldpi"/>
-        <screen android:screenSize="large" android:screenDensity="mdpi"/>
-        <screen android:screenSize="large" android:screenDensity="hdpi"/>
-        <screen android:screenSize="large" android:screenDensity="xhdpi"/>
-
-        <screen android:screenSize="xlarge" android:screenDensity="ldpi"/>
-        <screen android:screenSize="xlarge" android:screenDensity="mdpi"/>
-        <screen android:screenSize="xlarge" android:screenDensity="hdpi"/>
-        <screen android:screenSize="xlarge" android:screenDensity="xhdpi"/>
-    </compatible-screens>
+    <supports-screens
+        android:resizeable="true"
+        android:smallScreens="true"
+        android:normalScreens="true"
+        android:largeScreens="true"
+        android:xlargeScreens="true"
+        android:anyDensity="true" />
 
     <application
         android:allowBackup="true"

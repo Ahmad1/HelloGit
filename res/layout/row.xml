@@ -35,7 +35,7 @@
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:background="#f49418"
+        android:background="@color/light_orange"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:paddingTop="10dp"

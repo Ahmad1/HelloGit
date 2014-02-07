@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 
 import com.example.fragment0901.R;
 import com.example.fragment0901.utils.ESLConstants;
@@ -20,6 +21,7 @@ public class PodExpandActivity extends FragmentActivity  {
 
 	@Override
 	protected void onCreate(Bundle arg0) {
+        if (DEBUG) Log.i(tag, "######onCreate, PodExpandActivity");
 		// TODO Auto-generated method stub
 		getAppOrientation();
 		super.onCreate(arg0);
@@ -45,9 +47,15 @@ public class PodExpandActivity extends FragmentActivity  {
 
 	public void getAppOrientation() {
 		if (PodListActivity.getTwoPane()) {
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 		} else {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		}
+	}
+
+    @Override
+    protected void onDestroy() {
+        if (DEBUG) Log.i(tag, "######onDestroy, PodExpandActivity");
+        super.onDestroy();
 	}
 }
