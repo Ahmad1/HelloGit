@@ -28,29 +28,29 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
+import com.adsdk.sdk.Ad;
+import com.adsdk.sdk.banner.AdView;
 import com.example.fragment0901.R;
 import com.example.fragment0901.utils.ESLConstants;
 import com.example.fragment0901.utils.ESLNotificationManager;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.mediation.admob.AdMobExtras;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class PodExpandFragment extends Fragment implements OnClickListener, OnSeekCompleteListener, OnPreparedListener,
-		OnCompletionListener, OnInflateListener, OnSeekBarChangeListener, OnBufferingUpdateListener, OnErrorListener {
+		OnCompletionListener, OnInflateListener, OnSeekBarChangeListener, OnBufferingUpdateListener, OnErrorListener, com.adsdk.sdk.AdListener {
 	private final String tag = ((Object) this).getClass().getSimpleName();
 	private View view;
 	private Context context;
 	private TextView tv1, tv3, timePassed, timeTotal;
-	private SeekBar sBar;
-	private ImageButton btnPlay, share, back;
+	private SeekBar sBar, volumebar;
+	private ImageButton btnPlay, share, back, volume;
     private Button btnFFd, btnRwnd;
 	// private View line;
 	private ProgressBar prepareProgress;
@@ -76,6 +76,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
     private static boolean expandFragmentDestroyed;
 
     private AdView adView;
+    private boolean volumebarShown;
 
     @Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -121,35 +122,25 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 		tv1.setText(title);
 		tv3.setText(summary);
 		back.setOnClickListener(this);
+		volume.setOnClickListener(this);
         share.setOnClickListener(this);
 
         startMediaPlayer();
 
-        adView = new AdView(getActivity());
-        adView.setAdUnitId(ESLConstants.MY_AD_UNIT_ID);
-        adView.setAdSize(AdSize.BANNER);
+        adView = new AdView(context, "http://my.mobfox.com/request.php",ESLConstants.PUBLISHER_ID, true, true);
+        adView.setAdspaceWidth(320);
+        // Optional, used to set the custom size of banner placement. Without setting it,
+        // the SDK will use default size of 320x50 or 300x50 depending on device type.
+        adView.setAdspaceHeight(50);
+        adView.setAdspaceStrict(false);
+        // Optional, tells the server to only supply banner ads that are exactly of the desired size.
+        // Without setting it, the server could also supply smaller Ads when no ad of desired size is available.
 
-        Bundle bundle = new Bundle();
-        bundle.putString("color_bg", "EEFAEB");
-        bundle.putString("color_text", "CCCCCC");
-        AdMobExtras adExtras = new AdMobExtras(bundle);
-
+        adView.setAdListener(this);
         adContainer = (LinearLayout) view.findViewById(R.id.adViewContainerExpand);
         adContainer.setVisibility(View.GONE);
         adContainer.addView(adView);
 
-        // Initiate a generic request.
-        AdRequest adRequest = new AdRequest.Builder().addNetworkExtras(adExtras).build();
-        // .addTestDevice("D681537AB6AAA8DEA387EA0C864CBDC7")
-        // Load the adView with the ad request.
-        adView.loadAd(adRequest);
-        adView.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                super.onAdLoaded();
-                adContainer.setVisibility(View.VISIBLE);
-            }
-        });
 		return view;
 	}
 
@@ -193,6 +184,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
         timePassed.setText("00:00");
     }
 
+    RelativeLayout volumeContainer;
 	private void initialViews() {
 		sBar = (SeekBar) view.findViewById(R.id.seekBar1);
 		btnPlay = (ImageButton) view.findViewById(R.id.imageButton1);
@@ -201,13 +193,32 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 		tv3 = (TextView) view.findViewById(R.id.textView3);
 		timePassed = (TextView) view.findViewById(R.id.timepassed);
 		timeTotal = (TextView) view.findViewById(R.id.timetotal);
-		back = (ImageButton) view.findViewById(R.id.btnback);
+		back = (ImageButton) view.findViewById(R.id.btnBack);
+		volume = (ImageButton) view.findViewById(R.id.volume);
+		volumebar = (SeekBar) view.findViewById(R.id.volume_seekbar);
+        volumeContainer = (RelativeLayout) view.findViewById(R.id.volume_container);
 		btnFFd = (Button) view.findViewById(R.id.btnfastforward);
 		btnRwnd = (Button) view.findViewById(R.id.btnrewind);
 		prepareProgress = (ProgressBar) view.findViewById(R.id.prepare_progress);
 		prepareProgress.setVisibility(View.VISIBLE);
         share = (ImageButton) view.findViewById(R.id.share);
+        volumebar.setEnabled(true);
+        getActivity().setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+
 	}
+
+    // called from the activity which created this fragment.
+    public void volumeChanged() {
+        if (volumeContainer.getVisibility()== View.VISIBLE) {
+            if (volumebar != null && audioManager != null) {
+                volumebar.setMax(audioManager
+                        .getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+                volumebar.setProgress(audioManager
+                        .getStreamVolume(AudioManager.STREAM_MUSIC));
+            }
+        }
+    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -224,7 +235,31 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 		mp.setOnCompletionListener(this);
 		mp.setOnSeekCompleteListener(this);
 		sBar.setOnSeekBarChangeListener(this);
+        volumebar.setOnSeekBarChangeListener(mVolumebarListener);
 	}
+
+    private int progressVolume;
+    private AudioManager audioManager;
+    OnSeekBarChangeListener mVolumebarListener = new OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            progressVolume = progress;
+            if (fromUser) {
+                volumebar.setMax(audioManager
+                        .getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+                volumebar.setProgress(progressVolume);
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
+                        progressVolume, 0);
+                Log.i("TAG", "VOLUME CHANGED=" + progressVolume);
+            }
+        }
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+        }
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+        }
+    };
 
 	public boolean mpIsPlaying() {
 		if (mp != null && mp.isPlaying())
@@ -295,15 +330,15 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 		int currentPosition = mp.getCurrentPosition();
 		switch (v.getId()) {
 		case R.id.imageButton1:
-			if (!mp.isPlaying()) {
+			if (!mpIsPlaying()) {
 				playMedia();
                 mESLNotificationManager.addNotification(title , PodListActivity.getTwoPane());
-                if (!mp.isPlaying()){
+                if (!mpIsPlaying()){
                     prepareProgress.setVisibility(View.VISIBLE);
                     btnPlay.setBackgroundResource(R.drawable.ic_action_stop);
                     startMediaPlayer();
                 }
-			} else if (mp.isPlaying()) {
+			} else if (mpIsPlaying()) {
 				pauseMedia();
 			}
 
@@ -318,7 +353,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 					case TelephonyManager.CALL_STATE_RINGING:
                         try{
 
-                            if (mp != null && mp.isPlaying()) {
+                            if (mpIsPlaying()) {
                                 mp.pause();
                                 isPausedInCall = true;
                             }
@@ -372,7 +407,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
             startActivity(Intent.createChooser(shareIntent, "Share Via"));
             break;
 
-		case R.id.btnback:
+		case R.id.btnBack:
             if (PodListActivity.getTwoPane()){
                 getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             } else {
@@ -383,6 +418,14 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
             }
 			break;
 
+        case R.id.volume:
+            volumebar.setMax(audioManager
+                    .getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+            volumebar.setProgress(audioManager
+                    .getStreamVolume(AudioManager.STREAM_MUSIC));
+            showVolumeSeekBar();
+            break;
+
 		// case R.id.btndownload:
 		// Toast.makeText(getApplicationContext(), " download!",
 		// Toast.LENGTH_SHORT).show();
@@ -390,14 +433,42 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 		}
 	}
 
-	private void playMedia() {
+    private TimerTask volumeTask;
+    private void showVolumeSeekBar() {
+        if (!volumebarShown) {
+            volumeContainer.setVisibility(View.VISIBLE);
+        } else {
+            volumeContainer.setVisibility(View.GONE);
+        }
+        volumebarShown = !volumebarShown;
+        volumeTask = new TimerTask() {
+            @Override
+            public void run() {
+                hideVolumebar();
+            }
+        };
+        new Timer().schedule(volumeTask , 3500);
+    }
+
+    private void hideVolumebar() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                volumeContainer.setVisibility(View.GONE);
+                volumebarShown = false;
+            }
+        });
+    }
+
+
+    private void playMedia() {
 		btnPlay.setBackgroundResource(R.drawable.ic_action_pause);
 		mp.start();
 		setupHandler();
 	}
 
 	private void pauseMedia() {
-		if (mp.isPlaying()) {
+		if (mpIsPlaying()) {
 			btnPlay.setBackgroundResource(R.drawable.ic_action_play);
 			mp.pause();
 		}
@@ -411,7 +482,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 	private Runnable sendUpdatesToUI = new Runnable() {
 		public void run() {
             if (DEBUG) Log.i(tag, "runnable is running");
-			if (mp.isPlaying()) {
+			if (mpIsPlaying()) {
 				LogMediaPosition();
 				handler.postDelayed(this, 1000);
 			}
@@ -448,20 +519,21 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 
     @Override
     public void onPause() {
-        adView.pause();
+        // adView.pause();
         super.onPause();
+        hideVolumebar();
+        if (volumeTask != null) volumeTask.cancel();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        adView.resume();
+        // adView.resume();
     }
 
     @Override
     public void onDestroy() {
         if (DEBUG) Log.i(tag, "######onDestroy, PodExpandFragment");
-        adView.destroy();
         super.onDestroy();
         if (!PodListActivity.getTwoPane())
             getActivity().finish();
@@ -471,7 +543,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 	public void onDestroyView() {
         if (DEBUG) Log.i(tag, "######onDestroyView, PodExpandFragment");
 		super.onDestroyView();
-		if (mp.isPlaying()) {
+		if (mpIsPlaying()) {
 			mp.stop();
 		}
 		handler.removeCallbacks(sendUpdatesToUI);
@@ -484,4 +556,29 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
         return expandFragmentDestroyed;
     }
 
+    @Override
+    public void adClicked() {
+        if (DEBUG) Log.i(tag, "######adListener, adClicked");
+    }
+
+    @Override
+    public void adClosed(Ad ad, boolean b) {
+        if (DEBUG) Log.i(tag, "######adListener, adClosed");
+    }
+
+    @Override
+    public void adLoadSucceeded(Ad ad) {
+        adContainer.setVisibility(View.VISIBLE);
+        if (DEBUG) Log.i(tag, "######adListener, adLoadSucceeded");
+    }
+
+    @Override
+    public void adShown(Ad ad, boolean b) {
+        if (DEBUG) Log.i(tag, "######adListener, adShown");
+    }
+
+    @Override
+    public void noAdFound() {
+        if (DEBUG) Log.i(tag, "######adListener, noAdFound");
+    }
 }

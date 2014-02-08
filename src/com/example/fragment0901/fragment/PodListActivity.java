@@ -7,11 +7,11 @@ import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -30,7 +30,8 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
 	private static boolean twoPane;
 	private FrameLayout detailFrame;
 	private Bundle bundle = new Bundle();
-    private static boolean DEBUG = false;
+    private static boolean DEBUG = true;
+    private PodExpandFragment podcastDetail;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +107,7 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
                     fragmentTransaction.detach(getSupportFragmentManager().findFragmentByTag(ESLConstants.EXPAND_FRAGMENT));
                     fragmentTransaction.commit();
                 }
-                Fragment podcastDetail = new PodExpandFragment();
+                podcastDetail = new PodExpandFragment();
                 podcastDetail.setArguments(bundle);
 
                 if (DEBUG) Log.i(tag, bundle.getString("title") + " twopane ## selected Item");
@@ -147,6 +148,19 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
 
     public static boolean loggingEnabled() {
         return DEBUG;
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            podcastDetail.volumeChanged();
+            return super.onKeyDown(keyCode, event);
+        } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            podcastDetail.volumeChanged();
+            return super.onKeyDown(keyCode, event);
+        }
+
+        return super.onKeyDown(keyCode, event);
     }
 
 	/*@Override

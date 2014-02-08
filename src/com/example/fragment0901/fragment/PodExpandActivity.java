@@ -8,16 +8,18 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.KeyEvent;
 
 import com.example.fragment0901.R;
 import com.example.fragment0901.utils.ESLConstants;
 
-public class PodExpandActivity extends FragmentActivity  {
+public class PodExpandActivity extends FragmentActivity {
 	private String title;
 	private String tag = ((Object) this).getClass().getSimpleName();
     private Context context;
     private boolean DEBUG = PodListActivity.loggingEnabled();
     public static Activity expandActivity;
+    private PodExpandFragment expandFragment;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -30,7 +32,7 @@ public class PodExpandActivity extends FragmentActivity  {
 		setContentView(R.layout.activity_pod_expand);
 		Intent intent = this.getIntent();
 		Bundle extras = intent.getBundleExtra("selectedItem");
-		PodExpandFragment expandFragment = new PodExpandFragment();
+        expandFragment = new PodExpandFragment();
 		expandFragment.setArguments(extras);
 
         if (getFragmentManager().findFragmentByTag(ESLConstants.EXPAND_FRAGMENT) != null) {
@@ -52,6 +54,18 @@ public class PodExpandActivity extends FragmentActivity  {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		}
 	}
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            expandFragment.volumeChanged();
+            return super.onKeyDown(keyCode, event);
+        } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            expandFragment.volumeChanged();
+            return super.onKeyDown(keyCode, event);
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
     @Override
     protected void onDestroy() {

@@ -1,47 +1,50 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/LinearLayout1"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:isScrollContainer="true"
-    android:background="@color/light_green"
-    android:padding="3dp"
-    android:orientation="vertical" >
-
-    <RelativeLayout
+    >
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/dark_green"
-        android:orientation="horizontal" >
+        android:layout_height="fill_parent"
+        android:isScrollContainer="true"
+        android:background="@color/light_green"
+        android:padding="3dp"
+        android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/textView1"
-            style="@style/text_white_bold"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:paddingBottom="8dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="50dp"
-            android:paddingTop="8dp" />
-        <ImageButton
-            android:id="@+id/share"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="12dp"
-            android:background="@drawable/ic_action_share"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"/>
-    </RelativeLayout>
+            android:background="@color/dark_green"
+            android:orientation="horizontal" >
 
-    
+            <TextView
+                android:id="@+id/textView1"
+                style="@style/text_white_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:paddingBottom="8dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="50dp"
+                android:paddingTop="8dp" />
+            <ImageButton
+                android:id="@+id/share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="12dp"
+                android:background="@drawable/ic_action_share"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"/>
+        </RelativeLayout>
 
-    <ScrollView
-        android:id="@+id/ScrlView"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.8"
-        android:background="@color/light_green" >
+
+
+        <ScrollView
+            android:id="@+id/ScrlView"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.8"
+            android:background="@color/light_green" >
 
             <TextView
                 android:id="@+id/textView3"
@@ -55,125 +58,156 @@
                 android:paddingRight="8dp"
                 android:layout_marginBottom="10dp"
                 android:textColor="@color/Black_light" />
-    </ScrollView>
+        </ScrollView>
 
-    <View
-        android:layout_width="340dp"
-        android:layout_height="1dp"
-        android:background="@color/dark_green"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="3dp"
-        android:layout_gravity="center"
-         />
+        <View
+            android:layout_width="340dp"
+            android:layout_height="1dp"
+            android:background="@color/dark_green"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="3dp"
+            android:layout_gravity="center"
+            />
 
-    <LinearLayout
-        android:id="@+id/adViewContainerExpand"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/light_green"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="4dp" />
+        <LinearLayout
+            android:id="@+id/adViewContainerExpand"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/light_green"
+            android:gravity="center"
+            android:visibility="gone"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="4dp" />
 
-    <View
-        android:layout_width="340dp"
-        android:layout_height="1dp"
-        android:background="@color/dark_green"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="2dp"
-        android:layout_gravity="center"
-         />
+        <View
+            android:layout_width="340dp"
+            android:layout_height="1dp"
+            android:background="@color/dark_green"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="2dp"
+            android:layout_gravity="center"
+            />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.08"
+            android:background="@color/light_green" >
+
+            <TextView
+                android:id="@+id/timepassed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
+                android:textColor="#00ccff" />
+
+            <TextView
+                android:id="@+id/timetotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"
+                android:textColor="#00ccff" />
+
+            <SeekBar
+                android:id="@+id/seekBar1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/timetotal"
+                android:layout_toRightOf="@id/timepassed" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.15"
+            android:background="@color/dark_green" >
+
+            <ImageButton
+                android:id="@+id/imageButton1"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true" />
+
+            <Button
+                android:id="@+id/btnfastforward"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@+id/imageButton1"
+                android:text="@string/plus_ten"
+                android:textSize="12sp"
+                android:textColor="@color/White_transparent"
+                android:background="@drawable/ic_action_rotate_right" />
+
+            <Button
+                android:id="@+id/btnrewind"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:layout_alignTop="@+id/btnfastforward"
+                android:layout_marginRight="20dp"
+                android:layout_toLeftOf="@+id/imageButton1"
+                android:text="@string/minus_ten"
+                android:textSize="12sp"
+                android:textColor="@color/White_transparent"
+                android:background="@drawable/ic_action_rotate_left" />
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_alignParentLeft="true"
+                android:background="@drawable/back" />
+
+            <ImageButton
+                android:id="@+id/volume"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/back" />
+
+            <ProgressBar
+                android:id="@+id/prepare_progress"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/imageButton1"
+                android:layout_centerHorizontal="true" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
 
     <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.08"
-        android:background="@color/light_green" >
-
-        <TextView
-            android:id="@+id/timepassed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="5dp"
-            android:textColor="#00ccff" />
-
-        <TextView
-            android:id="@+id/timetotal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="5dp"
-            android:textColor="#00ccff" />
+        android:layout_width="280dp"
+        android:layout_height="80dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/white_shape"
+        android:visibility="gone"
+        android:id="@+id/volume_container"
+        >
 
         <SeekBar
-            android:id="@+id/seekBar1"
-            android:layout_width="fill_parent"
+            android:id="@+id/volume_seekbar"
+            android:layout_width="240dp"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/timetotal"
-            android:layout_toRightOf="@id/timepassed" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.15"
-        android:background="@color/dark_green" >
-
-        <ImageButton
-            android:id="@+id/imageButton1"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_centerInParent="true" />
-
-        <Button
-            android:id="@+id/btnfastforward"
-            android:layout_width="54dp"
-            android:layout_height="54dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:layout_toRightOf="@+id/imageButton1"
-            android:text="@string/plus_ten"
-            android:textSize="12sp"
-            android:textColor="@color/White_transparent"
-            android:background="@drawable/ic_action_rotate_right" />
-
-        <Button
-            android:id="@+id/btnrewind"
-            android:layout_width="54dp"
-            android:layout_height="54dp"
-            android:layout_alignTop="@+id/btnfastforward"
-            android:layout_marginRight="20dp"
-            android:layout_toLeftOf="@+id/imageButton1"
-            android:text="@string/minus_ten"
-            android:textSize="12sp"
-            android:textColor="@color/White_transparent"
-            android:background="@drawable/ic_action_rotate_left" />
-
-        <ImageButton
-            android:id="@+id/btnback"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_alignParentLeft="true"
-            android:background="@drawable/back" />
-
-        <ProgressBar
-            android:id="@+id/prepare_progress"
-            style="?android:attr/progressBarStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/imageButton1"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerInParent="true"
+            />
 
     </RelativeLayout>
 
-</LinearLayout>
+</RelativeLayout>
