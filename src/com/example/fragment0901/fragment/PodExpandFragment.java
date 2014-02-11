@@ -437,17 +437,18 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
     private void showVolumeSeekBar() {
         if (!volumebarShown) {
             volumeContainer.setVisibility(View.VISIBLE);
+            volumeTask = new TimerTask() {
+                @Override
+                public void run() {
+                    hideVolumebar();
+                }
+            };
+            new Timer().schedule(volumeTask , 3500);
         } else {
             volumeContainer.setVisibility(View.GONE);
+            if (volumeTask != null) volumeTask.cancel();
         }
         volumebarShown = !volumebarShown;
-        volumeTask = new TimerTask() {
-            @Override
-            public void run() {
-                hideVolumebar();
-            }
-        };
-        new Timer().schedule(volumeTask , 3500);
     }
 
     private void hideVolumebar() {
@@ -459,7 +460,6 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
             }
         });
     }
-
 
     private void playMedia() {
 		btnPlay.setBackgroundResource(R.drawable.ic_action_pause);

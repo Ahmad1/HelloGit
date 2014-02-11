@@ -189,12 +189,11 @@
                 android:layout_centerHorizontal="true" />
 
         </RelativeLayout>
-
     </LinearLayout>
 
     <RelativeLayout
-        android:layout_width="280dp"
-        android:layout_height="80dp"
+        android:layout_width="240dp"
+        android:layout_height="55dp"
         android:layout_centerInParent="true"
         android:background="@drawable/white_shape"
         android:visibility="gone"
@@ -209,5 +208,4 @@
             />
 
     </RelativeLayout>
-
 </RelativeLayout>

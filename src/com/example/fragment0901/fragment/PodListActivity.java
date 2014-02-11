@@ -6,12 +6,15 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -163,7 +166,7 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
         return super.onKeyDown(keyCode, event);
     }
 
-	/*@Override
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.pod_list, menu);
@@ -176,9 +179,16 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
             case R.id.action_settings:
                 return true;
             case R.id.rateApp:
+                String myUrl ="https://play.google.com/store/apps/details?id=com.feellike.eslpod0103";
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(myUrl)));
+                return true;
+            case R.id.email:
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                        "mailto","eslpod@eslpod.com", null));
+                startActivity(Intent.createChooser(emailIntent, "Send email..."));
                 return true;
         default:
                 return super.onOptionsItemSelected(item);
         }
-    }*/
+    }
 }
