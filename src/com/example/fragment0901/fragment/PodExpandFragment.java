@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -47,7 +48,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 		OnCompletionListener, OnInflateListener, OnSeekBarChangeListener, OnBufferingUpdateListener, OnErrorListener, com.adsdk.sdk.AdListener {
 	private final String tag = ((Object) this).getClass().getSimpleName();
 	private View view;
-	private Context context;
+	private Context mContext;
 	private TextView tv1, tv3, timePassed, timeTotal;
 	private SeekBar sBar, volumebar;
 	private ImageButton btnPlay, share, back, volume;
@@ -74,6 +75,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 	private final Handler handler = new Handler();
     private boolean DEBUG = PodListActivity.loggingEnabled();
     private static boolean expandFragmentDestroyed;
+    private AudioManager am;
 
     private AdView adView;
     private boolean volumebarShown;
@@ -81,7 +83,8 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
     @Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (DEBUG) Log.i(tag, "######onCreateActivity, PodExpandFragment");
-		context = getActivity();
+		mContext = getActivity();
+        am = (AudioManager) this.getActivity().getSystemService(Context.AUDIO_SERVICE);
 		view = inflater.inflate(R.layout.pod_expand_fragment, container, false);
 		initialViews();
         expandFragmentDestroyed = false;
@@ -117,7 +120,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
             time = extras.getString(ESLConstants.TIME_KEY);
         }
 
-        mESLNotificationManager = new ESLNotificationManager(context);
+        mESLNotificationManager = new ESLNotificationManager(mContext);
 
 		tv1.setText(title);
 		tv3.setText(summary);
@@ -127,7 +130,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 
         startMediaPlayer();
 
-        adView = new AdView(context, "http://my.mobfox.com/request.php",ESLConstants.PUBLISHER_ID, true, true);
+        adView = new AdView(mContext, "http://my.mobfox.com/request.php",ESLConstants.PUBLISHER_ID, true, true);
         adView.setAdspaceWidth(320);
         // Optional, used to set the custom size of banner placement. Without setting it,
         // the SDK will use default size of 320x50 or 300x50 depending on device type.
@@ -204,7 +207,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
         share = (ImageButton) view.findViewById(R.id.share);
         volumebar.setEnabled(true);
         getActivity().setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        audioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 
 	}
 
@@ -321,9 +324,38 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 		mp.seekTo(100);
 		sBar.setProgress(100);
 		pauseMedia();
+        abandonAudioFocus();
 		btnPlay.setBackgroundResource(R.drawable.ic_action_play);
 		timePassed.setText(milliSecondsToTimer(mp.getCurrentPosition()));
 	}
+
+    OnAudioFocusChangeListener afChangeListener = new OnAudioFocusChangeListener() {
+        public void onAudioFocusChange(int focusChange) {
+        if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT){
+            pauseMedia();
+        } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+            playMedia();
+        } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+            // am.unregisterMediaButtonEventReceiver(RemoteControlReceiver);
+            am.abandonAudioFocus(afChangeListener);
+            pauseMedia();
+        }
+    }
+};
+
+    private boolean requestTheAudioFocus(){
+        boolean granted ;
+        int result = am.requestAudioFocus(afChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        granted = (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED);
+        if (granted){
+            // am.registerMediaButtonEventReceiver(RemoteControlReceiver); TODO
+        }
+        return granted;
+    }
+
+    private void abandonAudioFocus(){
+        am.abandonAudioFocus(afChangeListener);
+    }
 
 	@Override
 	public void onClick(View v) {
@@ -331,7 +363,8 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 		switch (v.getId()) {
 		case R.id.imageButton1:
 			if (!mpIsPlaying()) {
-				playMedia();
+                requestTheAudioFocus();
+                playMedia();
                 mESLNotificationManager.addNotification(title , PodListActivity.getTwoPane());
                 if (!mpIsPlaying()){
                     prepareProgress.setVisibility(View.VISIBLE);
@@ -340,9 +373,10 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
                 }
 			} else if (mpIsPlaying()) {
 				pauseMedia();
+                abandonAudioFocus();
 			}
 
-			telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+			telephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
             if (DEBUG) Log.v(tag, "Starting listener");
 			phoneStateListener = new PhoneStateListener() {
 				@Override
@@ -352,7 +386,6 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 					case TelephonyManager.CALL_STATE_OFFHOOK:
 					case TelephonyManager.CALL_STATE_RINGING:
                         try{
-
                             if (mpIsPlaying()) {
                                 mp.pause();
                                 isPausedInCall = true;
@@ -372,9 +405,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 					}
 				}
 			};
-
 			telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
-
 			break;
 
 		case R.id.btnfastforward:
@@ -411,10 +442,10 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
             if (PodListActivity.getTwoPane()){
                 getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             } else {
-                Intent intent = new Intent(context, PodListActivity.class);
+                Intent intent = new Intent(mContext, PodListActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 // TODO: this flag is not reliable. save state of activity A and return back there. use service for media player.
-                context.startActivity(intent);
+                mContext.startActivity(intent);
             }
 			break;
 

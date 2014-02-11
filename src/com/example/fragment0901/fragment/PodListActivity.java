@@ -176,8 +176,8 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.action_settings:
-                return true;
+            /*case R.id.action_settings:
+                return true;*/
             case R.id.rateApp:
                 String myUrl ="https://play.google.com/store/apps/details?id=com.feellike.eslpod0103";
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(myUrl)));
