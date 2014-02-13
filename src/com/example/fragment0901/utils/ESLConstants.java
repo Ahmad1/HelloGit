@@ -23,6 +23,10 @@ public class ESLConstants {
     public static final String DATE_KEY = "date" ;
 
     public static final String URL = "http://feeds.feedburner.com/EnglishAsASecondLanguagePodcast";
+    public static final String FB_URL = "https://www.facebook.com/eslpod?fref=ts";
+    public static final String GP_URL = "https://play.google.com/store/apps/details?id=com.feellike.eslpod0103";
+    public static final String EMAIL = "eslpod@eslpod.com";
+    public static final String TWITTER_URL = "https://twitter.com/eslpod";
 
     // public static final String URL = "http://www.eslpod.com/past.xml";
     // http://feeds.feedburner.com/EnglishAsASecondLanguagePodcast

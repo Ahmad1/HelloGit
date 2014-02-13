@@ -13,6 +13,10 @@
     <string name="summary">summary</string>
     <string name="nonetwork">No Network Connection!</string>
     <string name="retry">Retry</string>
+    <string name="facebook">ESL on Facebook</string>
+    <string name="twitter">ESL on Twitter</string>
+    <string name="rate">Rate this App</string>
+    <string name="email">Email Autor</string>
     <string name="plus_ten">\u0020+10</string>
     <string name="minus_ten">-10\u0020</string>
 

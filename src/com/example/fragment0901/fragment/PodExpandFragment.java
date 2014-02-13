@@ -25,6 +25,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.ViewStub.OnInflateListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -465,6 +467,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 	}
 
     private TimerTask volumeTask;
+    private Animation fadeOut;
     private void showVolumeSeekBar() {
         if (!volumebarShown) {
             volumeContainer.setVisibility(View.VISIBLE);
@@ -474,22 +477,27 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
                     hideVolumebar();
                 }
             };
+            volumebarShown = true;
             new Timer().schedule(volumeTask , 3500);
         } else {
-            volumeContainer.setVisibility(View.GONE);
+            hideVolumebar();
             if (volumeTask != null) volumeTask.cancel();
         }
-        volumebarShown = !volumebarShown;
     }
 
     private void hideVolumebar() {
-        getActivity().runOnUiThread(new Runnable() {
+        if (volumebarShown){
+            fadeOut = AnimationUtils.loadAnimation(mContext, android.R.anim.fade_out);
+            if (fadeOut != null ) fadeOut.setDuration(500);
+            getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                volumeContainer.startAnimation(fadeOut);
                 volumeContainer.setVisibility(View.GONE);
                 volumebarShown = false;
             }
-        });
+            });
+        }
     }
 
     private void playMedia() {

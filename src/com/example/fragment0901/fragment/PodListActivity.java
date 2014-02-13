@@ -176,15 +176,21 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            /*case R.id.action_settings:
-                return true;*/
+            case R.id.twitter:
+                String twUrl =ESLConstants.TWITTER_URL;
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(twUrl)));
+                return true;
+            case R.id.facebook:
+                String fbUrl =ESLConstants.FB_URL;
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(fbUrl)));
+                return true;
             case R.id.rateApp:
-                String myUrl ="https://play.google.com/store/apps/details?id=com.feellike.eslpod0103";
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(myUrl)));
+                String gpUrl =ESLConstants.GP_URL;
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(gpUrl)));
                 return true;
             case R.id.email:
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                        "mailto","eslpod@eslpod.com", null));
+                        "mailto",ESLConstants.EMAIL, null));
                 startActivity(Intent.createChooser(emailIntent, "Send email..."));
                 return true;
         default:
