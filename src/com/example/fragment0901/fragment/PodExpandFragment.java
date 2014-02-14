@@ -576,6 +576,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
         super.onDestroy();
         if (!PodListActivity.getTwoPane())
             getActivity().finish();
+        am.abandonAudioFocus(afChangeListener);
     }
 
 	@Override
