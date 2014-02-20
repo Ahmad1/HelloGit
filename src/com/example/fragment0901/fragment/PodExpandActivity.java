@@ -57,10 +57,7 @@ public class PodExpandActivity extends FragmentActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-            expandFragment.volumeChanged();
-            return super.onKeyDown(keyCode, event);
-        } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
             expandFragment.volumeChanged();
             return super.onKeyDown(keyCode, event);
         }

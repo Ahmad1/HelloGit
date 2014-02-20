@@ -76,7 +76,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 	public MediaPlayer mp;
 	private final Handler handler = new Handler();
     private boolean DEBUG = PodListActivity.loggingEnabled();
-    private static boolean expandFragmentDestroyed;
+    private static boolean expandFragmentDestroyed = true;
     private AudioManager am;
 
     private AdView adView;
@@ -122,6 +122,13 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
             time = extras.getString(ESLConstants.TIME_KEY);
         }
 
+        if (link != null){
+            startMediaPlayer();
+        } else {
+            startActivity(new Intent(getActivity(), PodListActivity.class));
+            getActivity().finish();
+        }
+
         mESLNotificationManager = new ESLNotificationManager(mContext);
 
 		tv1.setText(title);
@@ -129,8 +136,6 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 		back.setOnClickListener(this);
 		volume.setOnClickListener(this);
         share.setOnClickListener(this);
-
-        startMediaPlayer();
 
         adView = new AdView(mContext, "http://my.mobfox.com/request.php",ESLConstants.PUBLISHER_ID, true, true);
         adView.setAdspaceWidth(320);
@@ -225,11 +230,6 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
         }
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-    }
-
     public void onPrepared(final MediaPlayer player) {
 		prepareProgress.setVisibility(View.INVISIBLE);
 		btnPlay.setBackgroundResource(R.drawable.ic_action_play);
@@ -269,8 +269,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 	public boolean mpIsPlaying() {
 		if (mp != null && mp.isPlaying())
 			return true;
-		else
-			return false;
+        return false;
 	}
 
 	public void onBufferingUpdate(MediaPlayer player, int percent) {
@@ -573,24 +572,20 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
     @Override
     public void onDestroy() {
         if (DEBUG) Log.i(tag, "######onDestroy, PodExpandFragment");
-        super.onDestroy();
-        if (!PodListActivity.getTwoPane())
-            getActivity().finish();
-        am.abandonAudioFocus(afChangeListener);
-    }
-
-	@Override
-	public void onDestroyView() {
-        if (DEBUG) Log.i(tag, "######onDestroyView, PodExpandFragment");
-		super.onDestroyView();
-		if (mpIsPlaying()) {
-			mp.stop();
-		}
-		handler.removeCallbacks(sendUpdatesToUI);
-		mp.release();
-	    mESLNotificationManager.removeNotification();
         expandFragmentDestroyed = true;
-	}
+        if (mpIsPlaying()) {
+            mp.stop();
+        }
+        if (adView != null) adView.release();
+        handler.removeCallbacks(sendUpdatesToUI);
+        if (mp != null) mp.release();
+        mESLNotificationManager.removeNotification();
+        if (am!= null) am.abandonAudioFocus(afChangeListener);
+        if (!PodListActivity.getTwoPane()) {
+            getActivity().finish();
+        }
+        super.onDestroy();
+    }
 
     public static boolean isDestroyed() {
         return expandFragmentDestroyed;
