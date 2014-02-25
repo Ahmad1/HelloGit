@@ -1,9 +1,8 @@
 package com.example.fragment0901.utils;
 
-public class ESLConstants {
-    /**
-     * Prevent class instantiation.
-     */
+public final class ESLConstants {
+
+    //Prevent class instantiation.
     private ESLConstants() {
     }
 
@@ -11,9 +10,8 @@ public class ESLConstants {
     public static final String EXPAND_FRAGMENT = "expand_fragment";
     public static final String XML_RESPONSE_STRING = "xmlResponse";
     public static final String LAST_UPDATED = "lastUpdated";
-    public static final String MY_AD_UNIT_ID = "?" ;
     public static final String PUBLISHER_ID = "?" ;
-    public static final String MY_AD_UNIT_NAME = "Buttom banner" ;
+    public static final String AMAZON_APP_ID = "?" ;
 
     public static final String TITLE_KEY = "title" ;
     public static final String LINK_KEY = "link" ;

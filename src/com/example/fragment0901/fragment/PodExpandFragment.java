@@ -36,9 +36,9 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-import com.adsdk.sdk.Ad;
 import com.adsdk.sdk.banner.AdView;
 import com.example.fragment0901.R;
+import com.example.fragment0901.utils.AmazonAdLoad;
 import com.example.fragment0901.utils.ESLConstants;
 import com.example.fragment0901.utils.ESLNotificationManager;
 
@@ -47,7 +47,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class PodExpandFragment extends Fragment implements OnClickListener, OnSeekCompleteListener, OnPreparedListener,
-		OnCompletionListener, OnInflateListener, OnSeekBarChangeListener, OnBufferingUpdateListener, OnErrorListener, com.adsdk.sdk.AdListener {
+		OnCompletionListener, OnInflateListener, OnSeekBarChangeListener, OnBufferingUpdateListener, OnErrorListener {
 	private final String tag = ((Object) this).getClass().getSimpleName();
 	private View view;
 	private Context mContext;
@@ -71,16 +71,15 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 	private TelephonyManager telephonyManager;
     private LinearLayout adContainer;
 
-	boolean downloaded = true;
-
 	public MediaPlayer mp;
 	private final Handler handler = new Handler();
     private boolean DEBUG = PodListActivity.loggingEnabled();
     private static boolean expandFragmentDestroyed = true;
     private AudioManager am;
 
-    private AdView adView;
     private boolean volumebarShown;
+
+    private AmazonAdLoad mAmzonAd;
 
     @Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -137,19 +136,10 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 		volume.setOnClickListener(this);
         share.setOnClickListener(this);
 
-        adView = new AdView(mContext, "http://my.mobfox.com/request.php",ESLConstants.PUBLISHER_ID, true, true);
-        adView.setAdspaceWidth(320);
-        // Optional, used to set the custom size of banner placement. Without setting it,
-        // the SDK will use default size of 320x50 or 300x50 depending on device type.
-        adView.setAdspaceHeight(50);
-        adView.setAdspaceStrict(false);
-        // Optional, tells the server to only supply banner ads that are exactly of the desired size.
-        // Without setting it, the server could also supply smaller Ads when no ad of desired size is available.
-
-        adView.setAdListener(this);
         adContainer = (LinearLayout) view.findViewById(R.id.adViewContainerExpand);
         adContainer.setVisibility(View.GONE);
-        adContainer.addView(adView);
+
+        mAmzonAd = new AmazonAdLoad(getActivity(), adContainer);
 
 		return view;
 	}
@@ -199,6 +189,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
 		sBar = (SeekBar) view.findViewById(R.id.seekBar1);
 		btnPlay = (ImageButton) view.findViewById(R.id.imageButton1);
 		btnPlay.setBackgroundResource(R.drawable.ic_action_stop);
+        btnPlay.setClickable(false);
 		tv1 = (TextView) view.findViewById(R.id.textView1);
 		tv3 = (TextView) view.findViewById(R.id.textView3);
 		timePassed = (TextView) view.findViewById(R.id.timepassed);
@@ -233,6 +224,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
     public void onPrepared(final MediaPlayer player) {
 		prepareProgress.setVisibility(View.INVISIBLE);
 		btnPlay.setBackgroundResource(R.drawable.ic_action_play);
+        btnPlay.setClickable(true);
 		btnPlay.setOnClickListener(this);
 		btnFFd.setOnClickListener(this);
 		btnRwnd.setOnClickListener(this);
@@ -255,7 +247,7 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
                 volumebar.setProgress(progressVolume);
                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
                         progressVolume, 0);
-                Log.i("TAG", "VOLUME CHANGED=" + progressVolume);
+                if (DEBUG) Log.i(tag, "VOLUME CHANGED=" + progressVolume);
             }
         }
         @Override
@@ -457,11 +449,6 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
                     .getStreamVolume(AudioManager.STREAM_MUSIC));
             showVolumeSeekBar();
             break;
-
-		// case R.id.btndownload:
-		// Toast.makeText(getApplicationContext(), " download!",
-		// Toast.LENGTH_SHORT).show();
-		// break;
 		}
 	}
 
@@ -573,14 +560,17 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
     public void onDestroy() {
         if (DEBUG) Log.i(tag, "######onDestroy, PodExpandFragment");
         expandFragmentDestroyed = true;
+        handler.removeCallbacks(sendUpdatesToUI);
+        mESLNotificationManager.removeNotification();
         if (mpIsPlaying()) {
             mp.stop();
         }
-        if (adView != null) adView.release();
-        handler.removeCallbacks(sendUpdatesToUI);
-        if (mp != null) mp.release();
-        mESLNotificationManager.removeNotification();
-        if (am!= null) am.abandonAudioFocus(afChangeListener);
+        if (mp != null)
+            mp.release();
+        if (am!= null)
+            am.abandonAudioFocus(afChangeListener);
+        if (mAmzonAd != null)
+            mAmzonAd.releaseAd();
         if (!PodListActivity.getTwoPane()) {
             getActivity().finish();
         }
@@ -591,29 +581,4 @@ public class PodExpandFragment extends Fragment implements OnClickListener, OnSe
         return expandFragmentDestroyed;
     }
 
-    @Override
-    public void adClicked() {
-        if (DEBUG) Log.i(tag, "######adListener, adClicked");
-    }
-
-    @Override
-    public void adClosed(Ad ad, boolean b) {
-        if (DEBUG) Log.i(tag, "######adListener, adClosed");
-    }
-
-    @Override
-    public void adLoadSucceeded(Ad ad) {
-        adContainer.setVisibility(View.VISIBLE);
-        if (DEBUG) Log.i(tag, "######adListener, adLoadSucceeded");
-    }
-
-    @Override
-    public void adShown(Ad ad, boolean b) {
-        if (DEBUG) Log.i(tag, "######adListener, adShown");
-    }
-
-    @Override
-    public void noAdFound() {
-        if (DEBUG) Log.i(tag, "######adListener, noAdFound");
-    }
 }
