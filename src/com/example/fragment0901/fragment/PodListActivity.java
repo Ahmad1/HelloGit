@@ -155,7 +155,7 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (!podcastDetail.isDestroyed()) {
+        if (podcastDetail != null && !podcastDetail.isDestroyed()) {
             if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP ) {
                 podcastDetail.volumeChanged();
                 return super.onKeyDown(keyCode, event);
