@@ -29,12 +29,12 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:label="@string/app_name" >
 
         <activity
             android:name=".fragment.PodListActivity"
             android:label="@string/app_name"
+            android:theme="@style/Theme.ESL.List"
             android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -44,6 +44,7 @@
         <activity
             android:name=".fragment.PodExpandActivity"
             android:label="@string/app_name"
+            android:theme="@style/Theme.ESL.Expand"
             android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

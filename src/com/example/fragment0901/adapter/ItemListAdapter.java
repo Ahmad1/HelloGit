@@ -21,11 +21,9 @@ public class ItemListAdapter extends BaseAdapter {
 
 	private LayoutInflater myInflater;
 	private List<PodCast> ItemsList;
-    private Context mContext;
 
 	public ItemListAdapter(Context context, List<PodCast> ItemsList) {
 		myInflater = LayoutInflater.from(context);
-        mContext = context;
 		this.ItemsList = ItemsList;
 		//Log.i(TAG, "Adapter has been setup successfully.");
 	}

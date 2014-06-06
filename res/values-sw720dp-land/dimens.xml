@@ -6,5 +6,7 @@
     -->
     <dimen name="activity_horizontal_margin">128dp</dimen>
     <dimen name="list_text_size">17sp</dimen>
+    <dimen name="header_text_size">17sp</dimen>
+    <dimen name="widget_margin">8dp</dimen>
 
 </resources>

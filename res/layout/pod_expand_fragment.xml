@@ -6,7 +6,6 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:isScrollContainer="true"
-        android:background="@color/light_green"
         android:padding="3dp"
         android:orientation="vertical" >
 
@@ -44,20 +43,17 @@
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="0.8"
-            android:background="@color/light_green" >
+             >
 
             <TextView
                 android:id="@+id/textView3"
+                style="@style/normal_text_black"
                 android:singleLine="false"
-                android:textSize="@dimen/list_text_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:background="@drawable/shape"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:layout_marginBottom="10dp"
-                android:textColor="@color/Black_light" />
+                android:layout_marginBottom="10dp" />
         </ScrollView>
 
         <View
@@ -74,7 +70,6 @@
             android:id="@+id/adViewContainerExpand"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/light_green"
             android:gravity="center"
             android:visibility="gone"
             android:orientation="horizontal"
@@ -95,7 +90,7 @@
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="0.08"
-            android:background="@color/light_green" >
+             >
 
             <TextView
                 android:id="@+id/timepassed"

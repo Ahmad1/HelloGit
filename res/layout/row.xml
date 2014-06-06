@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rlContainer"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/White">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/tvDate"
@@ -70,12 +69,8 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="5dp"
-            android:hint="@string/title"
             android:ellipsize="end"
-            android:maxLines="1"
-            android:includeFontPadding="true"
-            android:textColor="@color/Black_light"
-            android:textSize="@dimen/list_text_size" />
+            android:maxLines="1" />
 
 
         <TextView
@@ -87,12 +82,7 @@
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="5dp"
-            android:hint="@string/summary"
-            android:includeFontPadding="true"
-            android:maxLines="2"
-            android:textColor="@color/Black_light"
-            android:textSize="@dimen/list_text_size" />
+            android:layout_marginTop="5dp" />
 
     </RelativeLayout>
 
