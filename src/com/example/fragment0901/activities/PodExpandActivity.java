@@ -1,4 +1,4 @@
-package com.example.fragment0901.fragment;
+package com.example.fragment0901.activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,7 +11,9 @@ import android.util.Log;
 import android.view.KeyEvent;
 
 import com.example.fragment0901.R;
+import com.example.fragment0901.fragment.PodExpandFragment;
 import com.example.fragment0901.utils.ESLConstants;
+import com.example.fragment0901.utils.ThemeUtil;
 
 public class PodExpandActivity extends FragmentActivity {
 	private String title;
@@ -27,6 +29,7 @@ public class PodExpandActivity extends FragmentActivity {
 		// TODO Auto-generated method stub
 		getAppOrientation();
 		super.onCreate(arg0);
+        ThemeUtil.onActivityCreateSetTheme(this);
         expandActivity = this;
         context = getApplicationContext();
 		setContentView(R.layout.activity_pod_expand);

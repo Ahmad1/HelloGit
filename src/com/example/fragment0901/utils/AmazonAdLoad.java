@@ -11,7 +11,7 @@ import com.amazon.device.ads.AdListener;
 import com.amazon.device.ads.AdProperties;
 import com.amazon.device.ads.AdRegistration;
 import com.amazon.device.ads.AdTargetingOptions;
-import com.example.fragment0901.fragment.PodListActivity;
+import com.example.fragment0901.activities.PodListActivity;
 
 
 public class AmazonAdLoad implements AdListener{

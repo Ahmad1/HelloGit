@@ -8,5 +8,6 @@
     <dimen name="list_text_size">17sp</dimen>
     <dimen name="header_text_size">17sp</dimen>
     <dimen name="widget_margin">8dp</dimen>
+    <dimen name="radio_btn_margin">4dp</dimen>
 
 </resources>

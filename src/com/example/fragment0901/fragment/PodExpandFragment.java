@@ -1,6 +1,5 @@
 package com.example.fragment0901.fragment;
 
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
@@ -36,8 +35,8 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-import com.adsdk.sdk.banner.AdView;
 import com.example.fragment0901.R;
+import com.example.fragment0901.activities.PodListActivity;
 import com.example.fragment0901.utils.AmazonAdLoad;
 import com.example.fragment0901.utils.ESLConstants;
 import com.example.fragment0901.utils.ESLNotificationManager;

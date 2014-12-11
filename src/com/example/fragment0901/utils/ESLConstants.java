@@ -10,6 +10,10 @@ public final class ESLConstants {
     public static final String EXPAND_FRAGMENT = "expand_fragment";
     public static final String XML_RESPONSE_STRING = "xmlResponse";
     public static final String LAST_UPDATED = "lastUpdated";
+    public static final String THEME = "ESLTheme";
+    public static final String DARK_THEME = "darkTheme";
+    public static final String LIGHT_THEME = "lightTheme";
+    public static final String TEXT_SIZE = "ESLTextSize";
     public static final String PUBLISHER_ID = "?" ;
     public static final String AMAZON_APP_ID = "?" ;
 

@@ -1,7 +1,8 @@
-package com.example.fragment0901.fragment;
+package com.example.fragment0901.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
@@ -10,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -20,10 +22,13 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.example.fragment0901.ESLApplication;
 import com.example.fragment0901.R;
+import com.example.fragment0901.fragment.PodExpandFragment;
 import com.example.fragment0901.utils.CallBacksInterface;
 import com.example.fragment0901.utils.ESLConstants;
 import com.example.fragment0901.utils.PodCast;
+import com.example.fragment0901.utils.ThemeUtil;
 
 public class PodListActivity extends FragmentActivity implements CallBacksInterface{
 
@@ -35,34 +40,39 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
 	private Bundle bundle = new Bundle();
     private static boolean DEBUG = true;
     private PodExpandFragment podcastDetail;
+    private SharedPreferences sharedPrefs;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-            setAppOrientation();
+        ThemeUtil.onActivityCreateSetTheme(this);
+        sharedPrefs = ESLApplication.getESLInstance().
+                getSharedPreferences("com.example.fragment0901", Context.MODE_PRIVATE);
 
-		if (getConnectionStatus()) {
-			setContentView(R.layout.activity_pod_list);
-			detailFrame = (FrameLayout) findViewById(R.id.detailFrame);
-			// twoPane = (detailFrame != null && detailFrame.getVisibility() == View.VISIBLE);
+        setAppOrientation();
 
-		} else {
-			setContentView(R.layout.noconnection);
-			connectionError = (TextView) findViewById(R.id.connection_error);
-			Retry = (Button) findViewById(R.id.retry);
-			Retry.setOnClickListener(new View.OnClickListener() {
+        if (getConnectionStatus()) {
+            setContentView(R.layout.activity_pod_list);
+            detailFrame = (FrameLayout) findViewById(R.id.detailFrame);
+            // twoPane = (detailFrame != null && detailFrame.getVisibility() == View.VISIBLE);
 
-				@Override
-				public void onClick(View v) {
-					Intent intent = getIntent();
-					finish();
-					startActivity(intent);
-				}
-			});
-		}
+        } else {
+            setContentView(R.layout.noconnection);
+            connectionError = (TextView) findViewById(R.id.connection_error);
+            Retry = (Button) findViewById(R.id.retry);
+            Retry.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    Intent intent = getIntent();
+                    finish();
+                    startActivity(intent);
+                }
+            });
+        }
 	}
 
-	public void setAppOrientation() {
+    public void setAppOrientation() {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int width=dm.widthPixels;
@@ -92,12 +102,14 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
 	public void onItemSelected(PodCast podcast) {
         if (DEBUG) Log.i(tag, "onItemSelected called");
         boolean samePodCast = false;
-        if (bundle != null && bundle.getString("title") == podcast.getTitle()) {
+        if (bundle != null && !TextUtils.isEmpty(podcast.getTitle()) &&
+                podcast.getTitle().equalsIgnoreCase(bundle.getString(ESLConstants.TITLE_KEY))) {
 			samePodCast = true;
 		}
 
         if (twoPane){
             if (!samePodCast || PodExpandFragment.isDestroyed()) {
+                assert bundle != null;
                 bundle.putString(ESLConstants.TITLE_KEY, podcast.getTitle());
                 bundle.putString(ESLConstants.LINK_KEY, podcast.getLink());
                 bundle.putString(ESLConstants.SHARE_LINK_KEY, podcast.getshareLink());
@@ -123,6 +135,7 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
             if (!samePodCast && PodExpandActivity.expandActivity != null){
                 PodExpandActivity.expandActivity.finish();
             }
+            assert bundle != null;
             bundle.putString(ESLConstants.TITLE_KEY, podcast.getTitle());
             bundle.putString(ESLConstants.LINK_KEY, podcast.getLink());
             bundle.putString(ESLConstants.SHARE_LINK_KEY, podcast.getshareLink());
@@ -174,6 +187,9 @@ public class PodListActivity extends FragmentActivity implements CallBacksInterf
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
+            case R.id.action_settings:
+                startActivity(new Intent(this, SettingActivity.class));
+                return true;
             case R.id.twitter:
                 String twUrl =ESLConstants.TWITTER_URL;
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(twUrl)));

@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import com.adsdk.sdk.Ad;
 import com.adsdk.sdk.AdListener;
 import com.adsdk.sdk.banner.AdView;
-import com.example.fragment0901.fragment.PodListActivity;
+import com.example.fragment0901.activities.PodListActivity;
 
 public class MobFoxAdLoad implements AdListener{
     private Activity mActivity;

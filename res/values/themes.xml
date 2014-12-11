@@ -1,13 +1,17 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Separate theme to reduce background overdraw -->
-    <style name="Theme.ESL.List" parent="@android:style/Theme.Holo.NoActionBar">
-        <item name="android:windowBackground">@color/White</item>
+    <style name="Theme.ESL.List" parent="@android:style/Theme.Holo.Light">
+        <item name="android:windowBackground">@color/list_background_light</item>
         <item name="android:textViewStyle">@style/normal_text_black</item>
     </style>
 
     <style name="Theme.ESL.Expand" parent="@style/Theme.ESL.List">
-        <item name="android:windowBackground">@color/light_green</item>
+        <item name="android:windowBackground">@color/expand_background_light</item>
+    </style>
+
+    <style name="Theme.ESL.List.dark" parent="@android:Theme.Holo">
+
     </style>
 
 </resources>

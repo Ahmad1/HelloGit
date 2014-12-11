@@ -21,11 +21,14 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.fragment0901.ESLApplication;
 import com.example.fragment0901.R;
+import com.example.fragment0901.activities.PodListActivity;
 import com.example.fragment0901.adapter.ItemListAdapter;
 import com.example.fragment0901.utils.CallBacksInterface;
 import com.example.fragment0901.utils.ESLConstants;
 import com.example.fragment0901.utils.PodCast;
+import com.example.fragment0901.utils.ThemeUtil;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -54,8 +57,9 @@ public class PodListFragment extends Fragment {
 	private List<PodCast> PodcastList;
 	private ProgressBar progressBar;
 	private CallBacksInterface callBack;
-	private SharedPreferences mSharedPref;
-	private String sharedResponse;
+    private SharedPreferences sharedPrefs;
+
+    private String sharedResponse;
 	private String lastUpdated;
 	private boolean DEBUG = PodListActivity.loggingEnabled();
     // private AdView adView;
@@ -69,7 +73,7 @@ public class PodListFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		context = getActivity();
-		mSharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+		sharedPrefs = ESLApplication.getESLInstance().getSharedPreferences("com.example.fragment0901", Context.MODE_PRIVATE);
 
 		view = inflater.inflate(R.layout.pod_list_fragment, container, false);
 		ListOfPodcast = (ListView) view.findViewById(R.id.listView);
@@ -90,11 +94,14 @@ public class PodListFragment extends Fragment {
 		});
 
 		if (getConnectionStatus()) {
-			if (mSharedPref != null) {
-				lastUpdated = mSharedPref.getString(ESLConstants.LAST_UPDATED, null);
-				sharedResponse = mSharedPref.getString(ESLConstants.XML_RESPONSE_STRING, null);
+			if (sharedPrefs != null) {
+				lastUpdated = sharedPrefs.getString(ESLConstants.LAST_UPDATED, "empty");
+				sharedResponse = sharedPrefs.getString(ESLConstants.XML_RESPONSE_STRING, "empty");
+                Log.i(tag, "Selected LAST_UPDATED " + sharedPrefs.getString(ESLConstants.LAST_UPDATED, "empty"));
+                Log.i(tag, "Selected XML_RESPONSE_STRING " + sharedPrefs.getString(ESLConstants.XML_RESPONSE_STRING, "empty"));
+                Log.i(tag, "Selected THEME " + sharedPrefs.getInt(ESLConstants.THEME, ThemeUtil.THEME_DEFAULT));
 			}
-			if (sharedResponse != null) {
+			if (sharedResponse != null && !sharedResponse.equalsIgnoreCase("empty")) {
                 if (DEBUG) Log.i(tag, "loading from shared prefs");
 				if (PodcastList == null)
 					PodcastList = getLatestItems(true);
@@ -109,9 +116,11 @@ public class PodListFragment extends Fragment {
 		ListOfPodcast.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
-				PodCast selectedItem = (PodCast) mAdapter.getItem(position);
+				PodCast selectedItem = mAdapter.getItem(position);
                 if (DEBUG) Log.i(tag, selectedItem.getTitle() + " clicked Item");
 				callBack.onItemSelected(selectedItem);
+                Log.e(tag, "Selected Theme " + sharedPrefs.getInt(ESLConstants.THEME, ThemeUtil.THEME_DEFAULT));
+                Log.e(tag, "Selected LAST_UPDATED " + sharedPrefs.getString(ESLConstants.LAST_UPDATED, "empty"));
 			}
 		});
 		return view;
@@ -204,10 +213,8 @@ public class PodListFragment extends Fragment {
                 lastUpdated = "Last Update:  " + lastUpdated;
 
                 String xmlResponse = convertStreamToString(getInputStream(url));
-                SharedPreferences.Editor editor = mSharedPref.edit();
-				editor.putString(ESLConstants.XML_RESPONSE_STRING, xmlResponse);
-				editor.putString(ESLConstants.LAST_UPDATED, lastUpdated);
-				editor.commit();
+                sharedPrefs.edit().putString(ESLConstants.XML_RESPONSE_STRING, xmlResponse).commit();
+                sharedPrefs.edit().putString(ESLConstants.LAST_UPDATED, lastUpdated).commit();
 			}
 
 			// get titles and (links) out of xml

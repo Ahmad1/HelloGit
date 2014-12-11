@@ -8,8 +8,8 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
 import com.example.fragment0901.R;
-import com.example.fragment0901.fragment.PodExpandActivity;
-import com.example.fragment0901.fragment.PodListActivity;
+import com.example.fragment0901.activities.PodExpandActivity;
+import com.example.fragment0901.activities.PodListActivity;
 
 public class ESLNotificationManager {
     private Context context;
