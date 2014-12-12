@@ -46,7 +46,7 @@
 
             <TextView
                 android:id="@+id/textView3"
-                style="@style/normal_text_black"
+                android:textSize="@dimen/list_text_size"
                 android:singleLine="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

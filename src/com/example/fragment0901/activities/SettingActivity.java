@@ -10,22 +10,24 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 
-import com.example.fragment0901.ESLApplication;
 import com.example.fragment0901.R;
 import com.example.fragment0901.utils.ESLConstants;
 import com.example.fragment0901.utils.ThemeUtil;
 
-/**
- * Created by root on 7/30/14.
- */
+import java.util.ArrayList;
+
 public class SettingActivity extends Activity {
     private CheckBox themeSelector;
     private SharedPreferences sharedPrefs;
     private boolean changed = true;
     private int selectedTheme = ThemeUtil.THEME_DEFAULT;
+    private Spinner textSizeSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,14 @@ public class SettingActivity extends Activity {
         int theme = sharedPrefs.getInt(ESLConstants.THEME, ThemeUtil.THEME_DEFAULT);
         boolean darkTheme = (theme != ThemeUtil.THEME_DEFAULT);
         themeSelector = (CheckBox) findViewById(R.id.theme_selector);
+        textSizeSpinner = (Spinner) findViewById(R.id.text_size_spinner);
+        ArrayList<String> sizeList = new ArrayList<String>();
+        sizeList.add("Small");
+        sizeList.add("Normal");
+        sizeList.add("Large");
+        SpinnerAdapter adapter = new ArrayAdapter<String>(this, R.layout.esl_spinner_item, sizeList);
+        textSizeSpinner.setAdapter(adapter);
+
         themeSelector.setChecked(darkTheme);
         themeSelector.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -50,7 +60,7 @@ public class SettingActivity extends Activity {
 
                 SharedPreferences.Editor editor = sharedPrefs.edit();
                 editor.putInt(ESLConstants.THEME, selectedTheme);
-                editor.commit();
+                editor.apply();
                 Log.e("ahmad", "Selected Theme ##" + sharedPrefs.getInt(ESLConstants.THEME, ThemeUtil.THEME_DEFAULT));
 
                 if (changed) {
